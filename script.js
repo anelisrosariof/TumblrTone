@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
 
   function drawImageToCanvas(img) {
-    const maxW = 640;
+    const maxW = 600;
     const scale = Math.min(1, maxW / img.width);
     canvas.width = img.width * scale;
     canvas.height = img.height * scale;
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) { alert("Camera access denied."); }
   });
 
-  // Handle buttons
+  // Handle filter buttons
   document.getElementById("filters").addEventListener("click", e => {
     if (e.target.tagName !== "BUTTON") return;
     document.querySelectorAll("#filters button").forEach(b => b.classList.remove("active"));
@@ -57,8 +57,5 @@ document.addEventListener("DOMContentLoaded", () => {
       container.classList.add(`filter-${e.target.dataset.filter}`);
     }
   });
-});
-
-  }
 });
 
