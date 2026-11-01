@@ -364,6 +364,25 @@ textarea:focus {
 }
 
 /* ========================================
+  DOWNLOAD
+======================================== */
+.download-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+#downloadBtn {
+  background: var(--hot-pink);
+  padding: 13px 28px;
+}
+
+#downloadBtn:hover {
+  background: var(--cherry);
+  color: var(--paper);
+}
+
+/* ========================================
    RESPONSIVE
 ======================================== */
 
