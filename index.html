@@ -6,22 +6,29 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Tumblr Tone Filters</h1>
+  <div class="app-wrapper">
+    <h1>Tumblr Tone</h1>
+    <p class="subtitle">/ love letters & digital aesthetics</p>
 
-  <input type="file" accept="image/*" id="fileInput">
-  <button id="cameraBtn">Live Camera</button>
+    <div class="controls-bar">
+      <label class="custom-file-upload">
+        <input type="file" accept="image/*" id="fileInput">
+        Choose Photo
+      </label>
+      <button id="cameraBtn">Live Camera</button>
+    </div>
 
-  <!-- Container handles the filter styling -->
-  <div id="canvas-container">
-    <canvas id="canvas"></canvas>
-  </div>
+    <div id="canvas-container">
+      <canvas id="canvas"></canvas>
+    </div>
 
-  <div id="filters">
-    <button data-filter="none" class="active">Original</button>
-    <button data-filter="bleach">Bleach Bypass</button>
-    <button data-filter="2014">2014</button>
-    <button data-filter="amaro">Amaro</button>
-    <button data-filter="nashville">Nashville</button>
+    <div id="filters">
+      <button data-filter="none" class="active">Original</button>
+      <button data-filter="bleach">Bleach Bypass</button>
+      <button data-filter="2014">2014</button>
+      <button data-filter="amaro">Amaro</button>
+      <button data-filter="nashville">Nashville</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
