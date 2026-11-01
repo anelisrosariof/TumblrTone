@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fce0e6">
 
-  <title>TumblrTone</title>
+  <title>Tumblr Tone — Digital Darkroom</title>
 
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
+
   <main class="app-wrapper">
 
-    <!-- Header -->
+    <!-- HEADER -->
     <header class="app-header">
       <span class="kicker">THE DIGITAL DARKROOM · EST. 2014</span>
 
@@ -23,76 +25,228 @@
       </p>
     </header>
 
-    <!-- Photo controls -->
-    <div class="controls-bar">
+    <!-- UPLOAD CONTROLS -->
+    <section class="upload-section">
+      <div class="controls-bar">
 
-      <label class="custom-file-upload" for="fileInput">
-        <input
-          type="file"
-          accept="image/*"
-          id="fileInput"
-          hidden
-        >
-        Choose Photo
-      </label>
+        <label class="custom-file-upload" for="fileInput">
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            hidden
+          >
+          ♡ Choose Photo
+        </label>
 
-      <button id="cameraBtn" type="button">
-        Live Camera
-      </button>
+        <button id="cameraBtn" type="button">
+          ✧ Live Camera
+        </button>
 
-    </div>
+      </div>
+    </section>
 
-    <!-- Image preview -->
-    <div class="preview-section">
+    <!-- PHOTO PREVIEW -->
+    <section class="preview-section">
 
       <div class="section-heading">
         <span class="kicker">YOUR LITTLE MASTERPIECE</span>
         <span class="section-decoration">✳</span>
       </div>
 
-      <div id="canvas-container">
-        <canvas id="canvas"></canvas>
+      <div class="photo-stage">
+
+        <div id="canvas-container">
+          <canvas id="canvas"></canvas>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <span class="empty-heart">♡</span>
+          <h2>Your photo goes here</h2>
+          <p>Choose a photo to start making memories.</p>
+        </div>
+
       </div>
 
-    </div>
+      <div class="preview-toolbar">
 
-    <!-- Filters -->
-    <section class="filters-section">
-
-      <div class="section-heading">
-        <span class="kicker">PICK YOUR MOOD</span>
-        <span class="section-decoration">♡</span>
-      </div>
-
-      <div id="filters">
-        <button data-filter="none" class="active">Original</button>
-        <button data-filter="bleach">Bleach Bypass</button>
-        <button data-filter="2014">2014</button>
-        <button data-filter="amaro">Amaro</button>
-        <button data-filter="nashville">Nashville</button>
-        <button data-filter="valencia">Valencia</button>
-        <button data-filter="1977">1977</button>
-        <button data-filter="moon">Moon</button>
-        <button data-filter="dreamgirl">Dream Girl</button>
-        <button data-filter="digital">Digital Camera</button>
-      </div>
-      
-      <div class="download-section">
-        <button id="downloadBtn">
-          Save My Photo ♡
+        <button id="compareBtn" class="small-button" type="button">
+          ◐ Hold to Compare
         </button>
+
+        <span id="imageInfo">NO PHOTO LOADED</span>
+
       </div>
 
     </section>
 
-    <!-- Decorative footer -->
+    <!-- EDITOR -->
+    <section class="editor-section">
+
+      <div class="checker-strip"></div>
+
+      <!-- CATEGORY TABS -->
+      <div class="editor-tabs">
+        <button class="tab active" data-tab="filters">
+          ♡ Filters
+        </button>
+
+        <button class="tab" data-tab="adjust">
+          ✿ Adjust
+        </button>
+
+        <button class="tab" data-tab="effects">
+          ✧ Effects
+        </button>
+      </div>
+
+      <!-- FILTER PANEL -->
+      <div id="filtersPanel" class="editor-panel active">
+
+        <div class="section-heading">
+          <span class="kicker">PICK YOUR MOOD</span>
+          <span class="section-decoration">♡</span>
+        </div>
+
+        <div id="filters" class="filter-list">
+
+          <button data-filter="none" class="active">
+            Original
+          </button>
+
+          <button data-filter="bleach">
+            Bleach Bypass
+          </button>
+
+          <button data-filter="2014">
+            2014
+          </button>
+
+          <button data-filter="nashville">
+            Nashville
+          </button>
+
+          <button data-filter="amaro">
+            Amaro
+          </button>
+
+          <button data-filter="valencia">
+            Valencia
+          </button>
+
+          <button data-filter="1977">
+            1977
+          </button>
+
+          <button data-filter="keef">
+            Keef
+          </button>
+
+          <button data-filter="nuke">
+            Nuke
+          </button>
+
+          <button data-filter="haunted">
+            Haunted
+          </button>
+
+          <button data-filter="purple">
+            Purple Pixie
+          </button>
+
+          <button data-filter="moon">
+            Moon
+          </button>
+
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-heading">
+            <label for="filterIntensity">Filter Intensity</label>
+            <output id="filterIntensityValue">100</output>
+          </div>
+
+          <input
+            type="range"
+            id="filterIntensity"
+            min="0"
+            max="100"
+            value="100"
+          >
+        </div>
+
+      </div>
+
+      <!-- ADJUST PANEL -->
+      <div id="adjustPanel" class="editor-panel">
+
+        <div class="section-heading">
+          <span class="kicker">THE LITTLE DETAILS</span>
+          <span class="section-decoration">✿</span>
+        </div>
+
+        <div id="adjustmentControls"></div>
+
+      </div>
+
+      <!-- EFFECTS PANEL -->
+      <div id="effectsPanel" class="editor-panel">
+
+        <div class="section-heading">
+          <span class="kicker">A LITTLE MAGIC</span>
+          <span class="section-decoration">✧</span>
+        </div>
+
+        <div id="effectControls"></div>
+
+      </div>
+
+    </section>
+
+    <!-- ACTIONS -->
+    <section class="action-section">
+
+      <button id="resetBtn" class="secondary-button">
+        Reset
+      </button>
+
+      <button id="downloadBtn">
+        ♡ Save Photo
+      </button>
+
+    </section>
+
+    <!-- EXPORT OPTIONS -->
+    <div class="export-options">
+
+      <label for="exportFormat">SAVE AS</label>
+
+      <select id="exportFormat">
+        <option value="image/png">PNG</option>
+        <option value="image/jpeg">JPEG</option>
+      </select>
+
+      <label for="exportQuality">QUALITY</label>
+
+      <select id="exportQuality">
+        <option value="1">100%</option>
+        <option value="0.9" selected>90%</option>
+        <option value="0.8">80%</option>
+        <option value="0.7">70%</option>
+      </select>
+
+    </div>
+
+    <!-- FOOTER -->
     <footer class="app-footer">
       <div class="checker-strip"></div>
+
       <p>MADE WITH LOVE & A LITTLE NOSTALGIA ♡</p>
     </footer>
 
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=5"></script>
+
 </body>
 </html>
