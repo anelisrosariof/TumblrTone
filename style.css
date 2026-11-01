@@ -1,75 +1,400 @@
+/* ========================================
+   PALETTE
+======================================== */
+
 :root {
   --ink: #5b1717;
   --paper: #fffbf5;
   --cream: #fdf5ea;
   --pink: #f5bfcb;
+  --blush: #fce0e6;
   --hot-pink: #ee62a2;
+  --cherry: #d8373f;
+  --sky: #bcd2ee;
+  --olive: #c9bd67;
+  --lilac: #b4b1ee;
+  --butter: #f4e3a1;
+
+  --shadow: 3px 3px 0 var(--ink);
+}
+
+/* ========================================
+   GLOBAL
+======================================== */
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  font-family: Georgia, serif;
-  background-color: #fce0e6; /* Blush background */
+  margin: 0;
+  min-height: 100vh;
+
+  font-family: Georgia, "Times New Roman", serif;
   color: var(--ink);
+
   display: flex;
   justify-content: center;
-  padding: 2rem;
+  align-items: flex-start;
+
+  padding: 48px 24px;
+
+  /* Gingham pattern */
+  background-color: var(--blush);
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(238, 98, 162, 0.14) 50%,
+      transparent 50%
+    ),
+    linear-gradient(
+      rgba(238, 98, 162, 0.14) 50%,
+      transparent 50%
+    );
+
+  background-size: 60px 60px;
 }
+
+/* ========================================
+   POSTCARD CONTAINER
+======================================== */
 
 .app-wrapper {
-  background: var(--paper);
-  padding: 2rem;
-  max-width: 500px;
-  width: 100%;
-  /* The "postcard" effect */
-  border: 12px solid var(--pink);
-  box-shadow: 5px 6px 0px rgba(91, 23, 23, 0.12);
   position: relative;
+
+  width: 100%;
+  max-width: 500px;
+
+  padding: 42px 34px;
+
+  background: var(--paper);
+
+  border: 10px dashed var(--pink);
+
+  outline: 1px solid rgba(91, 23, 23, 0.65);
+  outline-offset: -17px;
+
+  box-shadow:
+    5px 6px 0 rgba(91, 23, 23, 0.14);
+
+  transform: rotate(-0.3deg);
 }
 
-/* Stamp Button Style */
-button, .custom-file-upload {
-  font-family: sans-serif;
+/* ========================================
+   TYPOGRAPHY
+======================================== */
+
+h1,
+h2,
+h3 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: clamp(32px, 7vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin: 0 0 12px;
+}
+
+h2 {
+  font-size: 25px;
+  margin-bottom: 14px;
+}
+
+p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+label {
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* ========================================
+   STAMP BUTTONS
+======================================== */
+
+button,
+.custom-file-upload {
+  appearance: none;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Arial, sans-serif;
   font-weight: 700;
   font-size: 11px;
+
   text-transform: uppercase;
   letter-spacing: 1.3px;
-  padding: 10px 18px;
+
+  padding: 11px 18px;
+
   background: var(--pink);
   color: var(--ink);
+
   border: 1.3px solid var(--ink);
   border-radius: 3px;
+
   cursor: pointer;
-  /* Hard drop shadow effect */
-  box-shadow: 3px 3px 0px var(--ink);
-  transition: transform 0.1s;
+
+  box-shadow: var(--shadow);
+
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.2s ease;
 }
 
-button:active {
+button:hover,
+.custom-file-upload:hover {
+  background: var(--hot-pink);
+}
+
+button:active,
+.custom-file-upload:active {
   transform: translate(3px, 3px);
-  box-shadow: 0px 0px 0px var(--ink);
+  box-shadow: none;
 }
 
-/* Canvas Container Tile */
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   CANVAS TILE
+======================================== */
+
 #canvas-container {
-  margin: 1rem 0;
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  padding: 4px;
-  /* Hard offset shadow */
-  box-shadow: 3px 3px 0px rgba(91, 23, 23, 0.85);
   display: inline-block;
+
+  max-width: 100%;
+
+  margin: 20px 0;
+  padding: 7px;
+
+  background: var(--paper);
+
+  border: 1px solid var(--ink);
+  border-radius: 5px;
+
+  box-shadow:
+    4px 4px 0 rgba(91, 23, 23, 0.85);
+
   line-height: 0;
 }
 
-/* Filter Palette styling */
+#canvas-container canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ========================================
+   FILTER CHIPS
+======================================== */
+
 #filters {
   display: flex;
+  flex-wrap: wrap;
+
   gap: 10px;
-  margin-top: 1rem;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#filters button {
+  padding: 8px 14px;
+
+  font-size: 10px;
+  letter-spacing: 1.2px;
+
+  background: var(--paper);
+
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+
+  box-shadow: none;
+}
+
+#filters button:hover {
+  background: var(--cream);
+  transform: translateY(-2px);
 }
 
 #filters button.active {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--pink);
+  color: var(--ink);
 }
 
+#filters button:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   INPUTS
+======================================== */
+
+input,
+select,
+textarea {
+  font-family: Georgia, serif;
+  font-size: 13px;
+
+  padding: 11px 12px;
+
+  color: var(--ink);
+  background: var(--paper);
+
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+
+  outline: none;
+
+  transition: box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 3px 3px 0 var(--pink);
+}
+
+/* ========================================
+   PAPER TILE
+======================================== */
+
+.tile {
+  padding: 18px;
+
+  background: var(--paper);
+
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* ========================================
+   GRID PAPER
+======================================== */
+
+.grid-paper {
+  background-color: var(--paper);
+
+  background-image:
+    linear-gradient(
+      rgba(245, 191, 203, 0.6) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(245, 191, 203, 0.6) 1px,
+      transparent 1px
+    );
+
+  background-size: 22px 22px;
+}
+
+/* ========================================
+   CHECKERBOARD STRIP
+======================================== */
+
+.checker-strip {
+  height: 12px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--pink) 0px,
+      var(--pink) 12px,
+      var(--paper) 12px,
+      var(--paper) 24px
+    );
+}
+
+/* ========================================
+   KICKER LABEL
+======================================== */
+
+.kicker {
+  display: inline-block;
+
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  padding: 4px 8px;
+
+  background: var(--butter);
+}
+
+/* ========================================
+   DECORATIVE STICKERS
+======================================== */
+
+.sticker {
+  display: inline-block;
+
+  font-size: 34px;
+
+  filter:
+    drop-shadow(2px 0 white)
+    drop-shadow(-2px 0 white)
+    drop-shadow(0 2px white)
+    drop-shadow(0 -2px white)
+    drop-shadow(2px 3px rgba(91, 23, 23, 0.25));
+
+  transform: rotate(-8deg);
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  body {
+    padding: 24px 14px;
+  }
+
+  .app-wrapper {
+    padding: 32px 22px;
+    transform: none;
+  }
+
+  h1 {
+    font-size: 34px;
+  }
+
+  #filters {
+    gap: 8px;
+  }
+
+  #filters button {
+    padding: 7px 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
