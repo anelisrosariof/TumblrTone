@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Filters Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>📸 Aesthetic Filters</h1>
+
+  <!-- Photo source -->
+  <input type="file" accept="image/*" id="fileInput">
+  <button id="cameraBtn">Use Camera</button>
+
+  <!-- Canvas where the image lives -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Filter buttons -->
+  <div id="filters">
+    <button data-filter="none">Original</button>
+    <button data-filter="bleach">Bleach Bypass</button>
+    <button data-filter="2014">2014</button>
+    <button data-filter="amaro">Amaro</button>
+    <button data-filter="nashville">Nashville</button>
+  </div>
+
+  <!-- CamanJS -->
+  <script src="caman.full.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
