@@ -2,21 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Web Filters Demo</title>
+  <title>TumblrTone</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <h1>Tumblr Tone Filters</h1>
 
-  <h1>📸 Aesthetic Filters</h1>
-
-  <!-- Photo source -->
   <input type="file" accept="image/*" id="fileInput">
-  <button id="cameraBtn">Use Camera</button>
+  <button id="cameraBtn">Live Camera</button>
 
-  <!-- Canvas where the image lives -->
   <canvas id="canvas"></canvas>
 
-  <!-- Filter buttons -->
   <div id="filters">
     <button data-filter="none">Original</button>
     <button data-filter="bleach">Bleach Bypass</button>
@@ -25,8 +21,10 @@
     <button data-filter="nashville">Nashville</button>
   </div>
 
-  <!-- CamanJS -->
+  <!-- Load Caman first -->
   <script src="caman.full.min.js"></script>
+  <!-- Then the app -->
   <script src="script.js"></script>
 </body>
 </html>
+
