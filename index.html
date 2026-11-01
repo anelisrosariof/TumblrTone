@@ -2,39 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TumblrTone</title>
-  <link rel="stylesheet" href="style.css?v=3">
-</head>
-<body>
-  <div class="app-wrapper">
-    <h1>Tumblr Tone</h1>
-    <p class="subtitle">/ love letters & digital aesthetics</p>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>TumblrTone</title>
+
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+
+<body>
+  <main class="app-wrapper">
+
+    <!-- Header -->
+    <header class="app-header">
+      <span class="kicker">THE DIGITAL DARKROOM · EST. 2014</span>
+
+      <h1 class="script-title">Tumblr Tone</h1>
+
+      <p class="subtitle">
+        / love letters & digital aesthetics
+      </p>
+    </header>
+
+    <!-- Photo controls -->
     <div class="controls-bar">
-      <label class="custom-file-upload">
-        <input type="file" accept="image/*" id="fileInput">
+
+      <label class="custom-file-upload" for="fileInput">
+        <input
+          type="file"
+          accept="image/*"
+          id="fileInput"
+          hidden
+        >
         Choose Photo
       </label>
-      <button id="cameraBtn">Live Camera</button>
+
+      <button id="cameraBtn" type="button">
+        Live Camera
+      </button>
+
     </div>
 
-    <div id="canvas-container">
-      <canvas id="canvas"></canvas>
+    <!-- Image preview -->
+    <div class="preview-section">
+
+      <div class="section-heading">
+        <span class="kicker">YOUR LITTLE MASTERPIECE</span>
+        <span class="section-decoration">✳</span>
+      </div>
+
+      <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+      </div>
+
     </div>
 
-    <div id="filters">
-      <button data-filter="none" class="active">Original</button>
-      <button data-filter="bleach">Bleach Bypass</button>
-      <button data-filter="2014">2014</button>
-      <button data-filter="amaro">Amaro</button>
-      <button data-filter="nashville">Nashville</button>
-    </div>
-  </div>
+    <!-- Filters -->
+    <section class="filters-section">
 
-  <script src="script.js"></script>
-</body>
-</html>
+      <div class="section-heading">
+        <span class="kicker">PICK YOUR MOOD</span>
+        <span class="section-decoration">♡</span>
+      </div>
 
+      <div id="filters">
+        <button data-filter="none" class="active">Original</button>
+        <button data-filter="bleach">Bleach Bypass</button>
+        <button data-filter="2014">2014</button>
+        <button data-filter="amaro">Amaro</button>
+        <button data-filter="nashville">Nashville</button>
+      </div>
+
+    </section>
+
+    <!-- Decorative footer -->
+    <footer class="app-footer">
+      <div class="checker-strip"></div>
+      <p>MADE WITH LOVE & A LITTLE NOSTALGIA ♡</p>
+    </footer>
+
+  </main>
 
   <script src="script.js"></script>
 </body>
