@@ -1,0 +1,23 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-align: center;
+  margin: 1rem;
+  background: #fafafa;
+}
+canvas {
+  max-width: 100%;
+  margin: 1rem 0;
+  border: 2px solid #ddd;
+}
+#filters button {
+  margin: 0.3rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #eee;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#filters button.active {
+  background: #ff8c00;
+  color: #fff;
+}
