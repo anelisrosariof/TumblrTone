@@ -11,20 +11,19 @@
   <input type="file" accept="image/*" id="fileInput">
   <button id="cameraBtn">Live Camera</button>
 
-  <canvas id="canvas"></canvas>
+  <!-- Container handles the filter styling -->
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
 
   <div id="filters">
-    <button data-filter="none">Original</button>
-    <button data-filter="bleach">Bleach Bypass</button>
+    <button data-filter="none" class="active">Original</button>
+    <button data-filter="bleach">Bleach Bypass</button>
     <button data-filter="2014">2014</button>
     <button data-filter="amaro">Amaro</button>
     <button data-filter="nashville">Nashville</button>
   </div>
 
-  <!-- Load Caman first -->
-  <script src="caman.full.min.js"></script>
-  <!-- Then the app -->
   <script src="script.js"></script>
 </body>
 </html>
-
