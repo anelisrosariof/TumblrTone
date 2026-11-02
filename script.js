@@ -4,7 +4,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================================
   // ELEMENTS
   // ========================================
-
+  const instagramFilters = {
+    xpro2: "contrast(1.3) brightness(0.8) sepia(0.3) saturate(1.5) hue-rotate(-20deg)",
+    willow: "saturate(0.02) contrast(0.85) brightness(1.2) sepia(0.02)",
+    walden: "sepia(0.35) contrast(0.9) brightness(1.1) hue-rotate(-10deg)",
+    valencia: "sepia(0.15) saturate(1.5) contrast(0.9)",
+    toaster: "sepia(0.4) saturate(2.5) hue-rotate(-30deg) contrast(0.67)",
+    sutro: "brightness(0.75) contrast(1.3) sepia(0.5) hue-rotate(-25deg)",
+    sierra: "contrast(0.8) saturate(1.2) sepia(0.15)",
+    rise: "saturate(1.4) sepia(0.25) hue-rotate(-15deg) contrast(0.8) brightness(1.1)",
+    nashville: "sepia(0.4) saturate(1.5) contrast(0.9) brightness(1.1) hue-rotate(-15deg)",
+    mayfair: "saturate(1.4) contrast(1.1)",
+    lofi: "contrast(1.4) brightness(0.9) sepia(0.05)",
+    kelvin: "sepia(0.4) saturate(2.4) brightness(1.3) contrast(1)",
+    inkwell: "grayscale(1) brightness(1.2) contrast(1.05)",
+    hudson: "contrast(1.2) brightness(0.9) hue-rotate(-10deg)",
+    hefe: "contrast(1.3) sepia(0.3) saturate(1.3) hue-rotate(-10deg) brightness(0.95)",
+    earlybird: "sepia(0.4) saturate(1.6) contrast(1.1) brightness(0.9) hue-rotate(-10deg)",
+    brannan: "sepia(0.5) contrast(1.4)",
+    amaro: "hue-rotate(-10deg) contrast(0.9) brightness(1.1) saturate(1.5)",
+    "1977": "sepia(0.5) hue-rotate(-30deg) saturate(1.2) contrast(0.8)"
+  };
+  
   const canvas = document.getElementById("canvas");
 
   const ctx = canvas.getContext("2d", {
