@@ -1279,3 +1279,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
+function applyInstagramFilter(source, filterName) {
+  const output = document.createElement("canvas");
+
+  output.width = source.width;
+  output.height = source.height;
+
+  const context = output.getContext("2d");
+
+  context.filter = instagramFilters[filterName] || "none";
+
+  context.drawImage(source, 0, 0);
+
+  context.filter = "none";
+
+  return output;
+}
