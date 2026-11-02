@@ -118,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let renderQueued = false;
-  let rendering = false;
 
   // ========================================
   // FILTER RECIPES
@@ -294,6 +293,25 @@ document.addEventListener("DOMContentLoaded", () => {
       vignette: 20
     }
   };
+
+  // Instagram recipes use their own IDs so original Tumblr Tone presets remain available.
+  const instagramLabels = {
+    xpro2: "X-Pro II", willow: "Willow", walden: "Walden",
+    valencia: "Valencia · IG", toaster: "Toaster", sutro: "Sutro",
+    sierra: "Sierra", rise: "Rise", nashville: "Nashville · IG",
+    mayfair: "Mayfair", lofi: "Lo-Fi", kelvin: "Kelvin",
+    inkwell: "Inkwell", hudson: "Hudson", hefe: "Hefe",
+    earlybird: "Earlybird", brannan: "Brannan",
+    amaro: "Amaro · IG", "1977": "1977 · IG"
+  };
+
+  for (const [key, label] of Object.entries(instagramLabels)) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.filter = `ig-${key}`;
+    button.textContent = label;
+    filtersContainer.appendChild(button);
+  }
 
   // ========================================
   // SLIDER DEFINITIONS
@@ -706,29 +724,60 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     const data = result.data;
-
-    const preset = presets[settings.filter];
-    const curves = buildCurveTables(preset);
-
+    const isInstagram = settings.filter.startsWith("ig-");
     const intensity = settings.intensity / 100;
+
+    // Canvas filters must be applied to actual pixels, not just CSS preview.
+    // This path is shared by the preview and the downloaded image.
+    if (isInstagram && intensity > 0) {
+      const name = settings.filter.slice(3);
+      const filterString = instagramFilters[name];
+      if (filterString) {
+        const inputCanvas = document.createElement("canvas");
+        inputCanvas.width = width;
+        inputCanvas.height = height;
+        inputCanvas.getContext("2d").putImageData(original, 0, 0);
+
+        const filteredCanvas = document.createElement("canvas");
+        filteredCanvas.width = width;
+        filteredCanvas.height = height;
+        const filteredCtx = filteredCanvas.getContext("2d", {
+          willReadFrequently: true
+        });
+        filteredCtx.filter = filterString;
+        filteredCtx.drawImage(inputCanvas, 0, 0);
+        filteredCtx.filter = "none";
+        const filtered = filteredCtx.getImageData(0, 0, width, height).data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = lerp(data[i], filtered[i], intensity);
+          data[i + 1] = lerp(data[i + 1], filtered[i + 1], intensity);
+          data[i + 2] = lerp(data[i + 2], filtered[i + 2], intensity);
+        }
+      }
+    }
+
+    const preset = isInstagram ? presets.none : presets[settings.filter];
+    const curves = buildCurveTables(preset);
+    const presetIntensity = isInstagram ? 0 : intensity;
 
     const adj = settings.adjustments;
     const fx = settings.effects;
 
     const brightness =
       adj.brightness * 0.8 +
-      preset.brightness * intensity;
+      preset.brightness * presetIntensity;
 
     const contrast =
       1 +
-      (adj.contrast + preset.contrast * intensity) / 100;
+      (adj.contrast + preset.contrast * presetIntensity) / 100;
 
     const saturation =
       Math.max(
         0,
         1 +
         (adj.saturation +
-          preset.saturation * intensity) / 100
+          preset.saturation * presetIntensity) / 100
       );
 
     const temperature = adj.temperature * 0.35;
@@ -736,12 +785,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const grainAmount =
       fx.grain * 0.4 +
-      preset.grain * intensity;
+      preset.grain * presetIntensity;
 
     const vignetteAmount =
       clamp(
         fx.vignette +
-          preset.vignette * intensity,
+          preset.vignette * presetIntensity,
         0,
         100
       ) / 100;
@@ -764,9 +813,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // RGB CURVES
         // ------------------------------
 
-        r = lerp(r, curves.r[r], intensity);
-        g = lerp(g, curves.g[g], intensity);
-        b = lerp(b, curves.b[b], intensity);
+        r = lerp(r, curves.r[r], presetIntensity);
+        g = lerp(g, curves.g[g], presetIntensity);
+        b = lerp(b, curves.b[b], presetIntensity);
 
         // ------------------------------
         // BRIGHTNESS
@@ -1024,7 +1073,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const filter = button.dataset.filter;
 
-    if (!presets[filter]) return;
+    if (!presets[filter] && !(filter.startsWith("ig-") && instagramFilters[filter.slice(3)])) return;
 
     state.filter = filter;
 
@@ -1280,19 +1329,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-function applyInstagramFilter(source, filterName) {
-  const output = document.createElement("canvas");
-
-  output.width = source.width;
-  output.height = source.height;
-
-  const context = output.getContext("2d");
-
-  context.filter = instagramFilters[filterName] || "none";
-
-  context.drawImage(source, 0, 0);
-
-  context.filter = "none";
-
-  return output;
-}
