@@ -7,6 +7,12 @@
   const FILTERS = window.TT_FILTERS;
   const GROUPS = window.TT_GROUPS;
   const byId = Object.fromEntries(FILTERS.map((f) => [f.id, f]));
+  const ROLL_ORDER = ["nashville", "kiev", "2014", "amaro", "nuke", "cash", "pandora", "sepia", "fresh"];
+  const groupIndex = (g) => GROUPS.findIndex((x) => x.id === g);
+  const LOOKS = FILTERS.filter((f) => f.id !== "none").sort((a, b) =>
+    groupIndex(a.group) - groupIndex(b.group) ||
+    (a.group === "roll" ? ROLL_ORDER.indexOf(a.id) - ROLL_ORDER.indexOf(b.id) : 0));
+  LOOKS.push(byId.none);
 
   // ======================================================
   // SETTINGS
@@ -58,7 +64,7 @@
   const ASPECTS = ["3:4", "1:1", "9:16", "4:3"];
 
   const defaults = () => ({
-    filterId: "2014",
+    filterId: "4s",
     intensity: 100,
     adjust: Object.fromEntries(ADJUST.map((d) => [d.key, 0])),
     effects: Object.fromEntries(EFFECTS.map((d) => [d.key, 0])),
@@ -84,6 +90,7 @@
     flash: false,
     grid: false,
     quality: "full",
+    sound: true,
     recorder: null,
     comparing: false,
     busy: false,
@@ -763,7 +770,7 @@
 
     // filter strip
     const strip = $("filterStrip");
-    FILTERS.forEach((f) => {
+    LOOKS.forEach((f) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "fthumb";
@@ -812,6 +819,12 @@
     $("caption").addEventListener("input", (e) => { S.caption = e.target.value; scheduleRender(); });
 
     makeChips($("qualityChips"), QUALITY, () => app.quality, (v) => { app.quality = v; });
+    makeChips($("aspectChips"), ASPECTS.map((a) => ({ id: a, name: a })), () => app.aspect, (v) => { app.aspect = v; paintHud(); });
+    makeChips($("gridChips"), [{ id: "off", name: "Off" }, { id: "on", name: "3×3" }], () => (app.grid ? "on" : "off"), (v) => {
+      app.grid = v === "on";
+      $("gridOverlay").hidden = !(app.mode === "camera" && app.grid);
+    });
+    makeChips($("soundChips"), [{ id: "on", name: "Beep" }, { id: "off", name: "Quiet" }], () => (app.sound ? "on" : "off"), (v) => { app.sound = v === "on"; });
 
     // tabs
     document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
@@ -825,6 +838,67 @@
   function paintFilter() {
     document.querySelectorAll(".fthumb").forEach((b) => b.classList.toggle("active", b.dataset.id === S.filterId));
     $("filterBlurb").textContent = byId[S.filterId].blurb;
+    $("hudLook").textContent = byId[S.filterId].name;
+  }
+
+  function paintHud() {
+    $("hudFlash").textContent = app.flash ? "⚡ON" : "⚡OFF";
+    $("hudFlash").hidden = app.camMode === "video" || app.mode !== "camera";
+    $("hudTimer").textContent = app.timer ? `⏱${app.timer}s` : "";
+    $("hudAspect").textContent = app.mode === "camera" ? app.aspect : "";
+    $("hudMode").textContent = { camera: app.camMode === "video" ? "● MOVIE" : "AUTO", image: "EDIT", video: "EDIT", empty: "" }[app.mode];
+    $("modeLabel").textContent = app.camMode === "video" ? "vid" : "pic";
+    document.body.classList.toggle("cam-video", app.camMode === "video");
+    $("dpUp").classList.toggle("on", app.flash);
+    $("dpDown").classList.toggle("on", !!app.timer);
+    const label = app.mode === "camera" ? (app.camMode === "video" ? (app.recorder ? "stop ■" : "rec ●") : "snap ♡") : app.mode === "empty" ? "on ♡" : "save ♡";
+    $("shutterLabel").textContent = label;
+    $("shutter").classList.toggle("video", app.mode === "camera" && app.camMode === "video");
+    $("shutter").setAttribute("aria-label", app.mode === "camera" ? (app.camMode === "video" ? "Start or stop recording" : "Take photo") : app.mode === "empty" ? "Turn camera on" : "Save");
+  }
+
+  // ---------- looks ----------
+
+  let lookTimer;
+  function stepLook(dir) {
+    const i = LOOKS.findIndex((f) => f.id === S.filterId);
+    const f = LOOKS[(i + dir + LOOKS.length) % LOOKS.length];
+    S.filterId = f.id;
+    paintFilter();
+    scheduleRender();
+    beep(dir > 0 ? 1320 : 1180, 0.03);
+    const g = GROUPS.find((x) => x.id === f.group);
+    $("lookToastGroup").textContent = g ? g.name.toUpperCase() : "NO FILTER";
+    $("lookToastName").textContent = f.name;
+    const t = $("lookToast");
+    t.hidden = true; void t.offsetWidth; t.hidden = false;
+    clearTimeout(lookTimer);
+    lookTimer = setTimeout(() => (t.hidden = true), 1100);
+    const thumb = document.querySelector(`.fthumb[data-id="${f.id}"]`);
+    if (thumb && !$("menu").hidden) thumb.scrollIntoView({ inline: "center", block: "nearest" });
+  }
+
+  // ---------- little camera beeps ----------
+
+  let beepCtx = null;
+  function beep(freq = 1400, dur = 0.05, vol = 0.05) {
+    if (!app.sound) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      beepCtx = beepCtx || new AC();
+      const o = beepCtx.createOscillator(), g = beepCtx.createGain();
+      o.type = "square"; o.frequency.value = freq;
+      g.gain.value = vol;
+      g.gain.exponentialRampToValueAtTime(0.0001, beepCtx.currentTime + dur);
+      o.connect(g).connect(beepCtx.destination);
+      o.start(); o.stop(beepCtx.currentTime + dur);
+    } catch (e) { /* no sound, no problem */ }
+  }
+  function shutterSound() {
+    if (!app.sound) return;
+    beep(2200, 0.02, 0.06);
+    setTimeout(() => beep(900, 0.06, 0.05), 70);
   }
 
   function syncAll() {
@@ -843,16 +917,10 @@
 
   function setMode(mode) {
     app.mode = mode;
-    const has = mode !== "empty";
-    $("frameBox").classList.toggle("visible", has);
-    $("emptyState").hidden = has;
-    $("cameraControls").hidden = mode !== "camera";
-    $("mediaControls").hidden = !(mode === "image" || mode === "video");
-    $("cameraBtn").classList.toggle("on", mode === "camera");
-    $("saveBtn").hidden = mode === "camera";
-    $("saveBtn").disabled = !(mode === "image" || mode === "video");
-    $("saveBtn").textContent = mode === "video" ? "♡ Save video" : "♡ Save photo";
-    $("stageKicker").textContent = { camera: "live viewfinder", image: "your little masterpiece", video: "now playing", empty: "your little masterpiece" }[mode];
+    document.body.className = "mode-" + mode;
+    $("emptyState").hidden = mode !== "empty";
+    if (mode === "empty") out.getContext("2d").clearRect(0, 0, out.width, out.height);
+    paintHud();
     $("gridOverlay").hidden = !(mode === "camera" && app.grid);
     if (mode === "camera" || mode === "video") startLoop(); else stopLoop();
     if (mode !== "video" && app.fileVideo) { app.fileVideo.pause(); }
@@ -927,6 +995,7 @@
       rx.drawImage(v, (sw - cw) / 2, (sh - ch) / 2, cw, ch, 0, 0, rw, rh);
       if (undoFlash) undoFlash();
 
+      shutterSound();
       $("flash").classList.remove("go"); void $("flash").offsetWidth; $("flash").classList.add("go");
       setTimeout(() => $("flash").classList.remove("go"), 600);
       if (navigator.vibrate) navigator.vibrate(20);
@@ -935,7 +1004,7 @@
       const original = await toBlob(raw, "image/jpeg", 0.92);
       const item = await rollAdd({ type: "image", blob, original, settings: snapshot() });
       setPeek(item);
-      toast("Developed ♡ tap the little square to save");
+      toast("Developed ♥ tap the little photo to save it");
     } finally {
       app.busy = false;
     }
@@ -1012,6 +1081,7 @@
       const rec = app.recorder;
       app.recorder = null;
       sh.classList.remove("recording");
+      paintHud();
       const blob = await stopRecording(rec);
       if (blob.size < 2000) { toast("That recording came out empty, try again"); return; }
       const item = await rollAdd({ type: "video", blob, settings: snapshot() });
@@ -1019,7 +1089,8 @@
       openViewer(item);
     } else {
       app.recorder = startRecording(app.stream ? app.stream.getAudioTracks() : []);
-      if (app.recorder) sh.classList.add("recording");
+      if (app.recorder) { sh.classList.add("recording"); beep(1600, 0.08); }
+      paintHud();
     }
   }
 
@@ -1033,7 +1104,7 @@
     try {
       await loadImageBlob(file);
       app.originalBlob = file;
-      $("mediaInfo").textContent = `${app.image.width} × ${app.image.height}`;
+      $("mediaInfo").textContent = `${app.image.width}×${app.image.height}`;
     } catch (e) {
       console.warn(e);
       toast("Couldn't open that photo");
@@ -1078,7 +1149,7 @@
       return;
     }
     setMode("video");
-    $("mediaInfo").textContent = `video · ${Math.round(v.duration || 0)}s`;
+    $("mediaInfo").textContent = `${Math.round(v.duration || 0)}s`;
     setTimeout(renderThumbs, 200);
   }
 
@@ -1086,8 +1157,8 @@
   async function exportVideoFile() {
     const v = app.fileVideo;
     app.busy = true;
-    $("saveBtn").disabled = true;
-    $("saveBtn").textContent = "Developing… ♡";
+    $("shutter").disabled = true;
+    $("shutterLabel").textContent = "developing…";
     let audioTracks = [];
     try {
       if (!audioCtx) {
@@ -1123,8 +1194,8 @@
       v.muted = true;
       v.play().catch(() => {});
       app.busy = false;
-      $("saveBtn").disabled = false;
-      $("saveBtn").textContent = "♡ Save video";
+      $("shutter").disabled = false;
+      paintHud();
     }
   }
 
@@ -1310,78 +1381,116 @@
     toastTimer = setTimeout(() => (t.hidden = true), 2600);
   }
 
+  function openRoll() { $("roll").hidden = false; beep(1000, 0.04); }
+  function closeRoll() { $("roll").hidden = true; }
+
+  function openMenu() {
+    $("menu").hidden = false;
+    $("funcBtn").classList.add("on");
+    renderThumbs();
+    const a = document.querySelector(".fthumb.active");
+    if (a) a.scrollIntoView({ inline: "center", block: "nearest" });
+  }
+  function closeMenu() { $("menu").hidden = true; $("funcBtn").classList.remove("on"); }
+
+  function powerOn() { if (app.mode !== "camera") startCamera(); }
+  function powerOff() {
+    if (app.recorder) return;
+    stopCamera();
+    closeMenu();
+    setMode("empty");
+  }
+
   function wire() {
-    $("cameraBtn").addEventListener("click", () => {
-      if (app.mode === "camera") return;
-      startCamera();
+    $("powerBtn").addEventListener("click", () => {
+      beep(880, 0.08);
+      if (app.mode === "empty") powerOn(); else powerOff();
     });
-    $("fileInput").addEventListener("change", (e) => { loadFile(e.target.files[0]); e.target.value = ""; });
+    $("emptyState").addEventListener("click", powerOn);
+    $("emptyState").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") powerOn(); });
+    $("fileInput").addEventListener("change", (e) => { closeMenu(); loadFile(e.target.files[0]); e.target.value = ""; });
 
     $("shutter").addEventListener("click", () => {
-      if (app.camMode === "video") toggleCameraRecording(); else capturePhoto();
+      if (app.mode === "empty") return powerOn();
+      if (app.mode === "camera") {
+        if (app.camMode === "video") toggleCameraRecording(); else capturePhoto();
+        return;
+      }
+      shutterSound();
+      saveCurrent();
     });
     $("flipBtn").addEventListener("click", () => {
       if (app.recorder) return;
       app.facing = app.facing === "user" ? "environment" : "user";
+      beep(1200, 0.03);
       startCamera();
     });
     $("rollPeek").addEventListener("click", () => {
       const it = $("rollPeek")._item;
-      if (it) openViewer(it); else $("roll").scrollIntoView({ behavior: "smooth" });
+      if (it) openViewer(it); else openRoll();
     });
+    $("rollBtn").addEventListener("click", openRoll);
+    $("rollClose").addEventListener("click", closeRoll);
+    $("roll").addEventListener("click", (e) => { if (e.target === $("roll")) closeRoll(); });
 
-    $("aspectBtn").addEventListener("click", (e) => {
-      app.aspect = ASPECTS[(ASPECTS.indexOf(app.aspect) + 1) % ASPECTS.length];
-      e.target.textContent = app.aspect;
-    });
-    $("timerBtn").addEventListener("click", (e) => {
-      app.timer = { 0: 3, 3: 10, 10: 0 }[app.timer];
-      e.target.textContent = app.timer ? `⏱ ${app.timer}s` : "⏱ off";
-      e.target.classList.toggle("on", !!app.timer);
-    });
-    $("flashBtn").addEventListener("click", (e) => {
+    // D-pad
+    $("dpLeft").addEventListener("click", () => stepLook(-1));
+    $("dpRight").addEventListener("click", () => stepLook(1));
+    $("dpUp").addEventListener("click", () => {
       app.flash = !app.flash;
-      e.target.textContent = app.flash ? "⚡ on" : "⚡ off";
-      e.target.classList.toggle("on", app.flash);
+      beep(1500, 0.03);
+      paintHud();
+      toast(app.flash ? "Flash on ⚡" : "Flash off");
     });
-    $("gridBtn").addEventListener("click", (e) => {
-      app.grid = !app.grid;
-      e.target.classList.toggle("on", app.grid);
-      $("gridOverlay").hidden = !app.grid;
+    $("dpDown").addEventListener("click", () => {
+      app.timer = { 0: 3, 3: 10, 10: 0 }[app.timer];
+      beep(1500, 0.03);
+      paintHud();
+      toast(app.timer ? `Self-timer ${app.timer}s` : "Self-timer off");
     });
+    $("funcBtn").addEventListener("click", () => {
+      beep(1100, 0.04);
+      if ($("menu").hidden) openMenu(); else closeMenu();
+    });
+    $("menuClose").addEventListener("click", closeMenu);
 
     document.querySelectorAll(".mode").forEach((b) => b.addEventListener("click", () => {
       if (app.recorder || b.dataset.mode === app.camMode) return;
       app.camMode = b.dataset.mode;
       document.querySelectorAll(".mode").forEach((x) => x.classList.toggle("active", x === b));
-      $("shutter").classList.toggle("video", app.camMode === "video");
-      $("shutter").setAttribute("aria-label", app.camMode === "video" ? "Start or stop recording" : "Take photo");
-      $("flashBtn").hidden = app.camMode === "video";
-      $("timerBtn").hidden = app.camMode === "video";
-      startCamera(); // reopen with / without microphone
+      beep(1300, 0.03);
+      paintHud();
+      if (app.mode === "camera") startCamera(); // reopen with / without microphone
     }));
 
-    // compare: hold on button or on the picture itself
-    const on = (e) => { if (app.mode === "camera") return; e.preventDefault(); app.comparing = true; scheduleRender(); };
-    const off = () => { if (!app.comparing) return; app.comparing = false; scheduleRender(); };
-    [$("compareBtn"), out].forEach((el) => {
-      el.addEventListener("pointerdown", on);
-      el.addEventListener("pointerup", off);
-      el.addEventListener("pointerleave", off);
-      el.addEventListener("pointercancel", off);
-      el.addEventListener("contextmenu", (e) => e.preventDefault());
+    // screen: swipe to change looks, hold to compare (when editing)
+    let downX = null, downY = 0, holdTimer = null;
+    const off = () => { clearTimeout(holdTimer); if (app.comparing) { app.comparing = false; scheduleRender(); } };
+    out.addEventListener("pointerdown", (e) => {
+      downX = e.clientX; downY = e.clientY;
+      if (app.mode === "image" || app.mode === "video") {
+        holdTimer = setTimeout(() => { app.comparing = true; scheduleRender(); }, 180);
+      }
     });
+    out.addEventListener("pointerup", (e) => {
+      off();
+      if (downX === null) return;
+      const dx = e.clientX - downX, dy = e.clientY - downY;
+      downX = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) stepLook(dx < 0 ? 1 : -1);
+    });
+    out.addEventListener("pointerleave", () => { off(); downX = null; });
+    out.addEventListener("pointercancel", () => { off(); downX = null; });
+    out.addEventListener("contextmenu", (e) => e.preventDefault());
 
     $("resetBtn").addEventListener("click", () => {
-      const keepFilter = S.filterId === "none" ? "none" : S.filterId;
+      const keepFilter = S.filterId;
       S = defaults();
       S.filterId = keepFilter;
-      S.intensity = 100;
       syncAll();
       scheduleRender();
       toast("Back to fresh ♡");
     });
-    $("saveBtn").addEventListener("click", saveCurrent);
 
     $("viewerClose").addEventListener("click", closeViewer);
     $("viewer").addEventListener("click", (e) => { if (e.target === $("viewer")) closeViewer(); });
@@ -1397,15 +1506,21 @@
       const item = viewing;
       if (!item || !item.original) return;
       closeViewer();
+      closeRoll();
       stopCamera();
       S = Object.assign(defaults(), item.settings || {});
       syncAll();
       app.originalBlob = item.original;
       await loadImageBlob(item.original);
-      $("mediaInfo").textContent = `${app.image.width} × ${app.image.height}`;
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      $("mediaInfo").textContent = `${app.image.width}×${app.image.height}`;
     });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("viewer").hidden) closeViewer(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "INPUT") return;
+      if (e.key === "Escape") { if (!$("viewer").hidden) closeViewer(); else if (!$("roll").hidden) closeRoll(); else closeMenu(); }
+      if (e.key === "ArrowLeft") stepLook(-1);
+      if (e.key === "ArrowRight") stepLook(1);
+      if (e.key === " " && app.mode === "camera") { e.preventDefault(); $("shutter").click(); }
+    });
 
     document.addEventListener("visibilitychange", () => {
       if (app.mode !== "camera") return;
@@ -1424,7 +1539,7 @@
     } catch (e) {
       console.error(e);
       $("emptyState").querySelector("h2").textContent = "Oh no";
-      $("emptyState").querySelector("p").textContent = "This browser can't run the darkroom (WebGL is off). Try Safari or Chrome.";
+      $("emptyState").querySelector("p").textContent = "This browser can't run the camera (WebGL is off). Try Safari or Chrome.";
       return;
     }
     buildUI();
@@ -1437,7 +1552,7 @@
     if ("serviceWorker" in navigator && location.protocol === "https:") {
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }
-    window.__tt = { app, get S() { return S; }, loadImageBlob, renderThumbs, renderPreview };
+    window.__tt = { app, get S() { return S; }, loadImageBlob, renderThumbs, renderPreview, stepLook, setMode, startLoop };
   }
 
   boot();

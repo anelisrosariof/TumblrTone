@@ -2,174 +2,197 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#fce0e6">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#fbf6ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Tumblr Tone">
-  <meta name="description" content="A little digital darkroom: live camera filters, film looks, date stamps and light leaks.">
+  <meta name="description" content="A hand-painted pink pocket digicam in your browser: live camera looks, film rolls, date stamps and light leaks.">
   <title>Tumblr Tone</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preload" as="image" href="img/camera-blank.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=7">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Gochi+Hand&family=Great+Vibes&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
-<body>
-  <main class="postcard">
+<body class="mode-empty">
+  <div class="desk">
+    <!-- scattered painted stickers -->
+    <img class="deco d-bow" src="img/bow.webp" alt="" aria-hidden="true">
+    <img class="deco d-cassette" src="img/cassette.webp" alt="" aria-hidden="true">
+    <img class="deco d-sparkle" src="img/sparkle.webp" alt="" aria-hidden="true">
+    <img class="deco d-heart" src="img/heart.webp" alt="" aria-hidden="true">
+    <img class="deco d-lily" src="img/lily.webp" alt="" aria-hidden="true">
+    <img class="deco d-gummy" src="img/gummy.webp" alt="" aria-hidden="true">
+    <img class="deco d-star" src="img/star-button.webp" alt="" aria-hidden="true">
 
-    <header class="app-header">
-      <span class="sticker s1" aria-hidden="true">♥</span>
-      <span class="sticker s2" aria-hidden="true">★</span>
-      <span class="kicker tag">the digital darkroom · est. 2014</span>
-      <h1 class="script-title">Tumblr Tone</h1>
-      <p class="subtitle">live camera filters, film looks &amp; little love letters</p>
+    <header class="title">
+      <h1>tumblr tone</h1>
+      <span class="tag">pocket digicam</span>
     </header>
 
-    <!-- SOURCE PICKER -->
-    <nav class="source-bar" aria-label="Choose a source">
-      <button id="cameraBtn" class="stamp" type="button">✧ Camera</button>
-      <label class="stamp stamp-sky" for="fileInput">
-        ♡ From Roll
-        <input type="file" id="fileInput" accept="image/*,video/*" hidden>
-      </label>
-    </nav>
+    <main class="cam" id="cam">
+      <img class="cam-art" src="img/camera-blank.webp" alt="" aria-hidden="true">
+      <img class="strap" src="img/strap.webp" alt="" aria-hidden="true">
 
-    <!-- STAGE -->
-    <section class="stage-wrap">
-      <div class="section-heading">
-        <span class="kicker" id="stageKicker">your little masterpiece</span>
-        <span class="deco">✳</span>
-      </div>
+      <button id="powerBtn" class="hit hit-power" type="button" aria-label="Power camera on or off"><i class="led"></i></button>
 
-      <div id="stage" class="stage">
-        <div id="frameBox" class="frame-box">
-          <canvas id="out"></canvas>
-          <div id="gridOverlay" class="grid-overlay" hidden></div>
-          <div id="countdown" class="countdown" hidden></div>
-          <div id="recBadge" class="rec-badge" hidden>● REC <span id="recTime">0:00</span></div>
+      <div class="screen" id="stage">
+        <canvas id="out"></canvas>
+        <div id="gridOverlay" class="grid-overlay" hidden></div>
+
+        <div class="hud" id="hud" aria-hidden="true">
+          <div class="hud-row">
+            <span id="hudMode">AUTO</span>
+            <span id="hudFlash">⚡OFF</span>
+            <span id="hudTimer"></span>
+            <span class="hud-spacer"></span>
+            <span id="hudAspect">3:4</span>
+            <span class="batt"><i></i><i></i><i></i></span>
+          </div>
+          <div class="hud-row hud-bottom">
+            <span id="hudLook" class="hud-look">4S</span>
+            <span class="hud-spacer"></span>
+            <span id="mediaInfo"></span>
+          </div>
         </div>
 
-        <div id="emptyState" class="empty-state">
-          <span class="empty-heart">♡</span>
-          <h2>Say cheese</h2>
-          <p>Open the camera for live filters, or pick a photo or video from your roll.</p>
+        <div id="lookToast" class="look-toast" hidden>
+          <small id="lookToastGroup"></small>
+          <b><span>◀</span> <em id="lookToastName"></em> <span>▶</span></b>
+        </div>
+
+        <div id="countdown" class="countdown" hidden></div>
+        <div id="recBadge" class="rec-badge" hidden>● REC <span id="recTime">0:00</span></div>
+
+        <div id="emptyState" class="screen-off" role="button" tabindex="0" aria-label="Turn the camera on">
+          <div class="boot">
+            <span class="boot-heart">♥</span>
+            <h2>TUMBLR TONE</h2>
+            <p>tap the screen or the big<br>bar to start shooting</p>
+          </div>
         </div>
 
         <div id="flash" class="flash"></div>
-      </div>
 
-      <!-- camera controls -->
-      <div id="cameraControls" class="camera-controls" hidden>
-        <div class="cam-options">
-          <button class="chip" id="aspectBtn" type="button">3:4</button>
-          <button class="chip" id="timerBtn" type="button">⏱ off</button>
-          <button class="chip" id="flashBtn" type="button">⚡ off</button>
-          <button class="chip" id="gridBtn" type="button">▦ grid</button>
-        </div>
-        <div class="shutter-row">
-          <button id="rollPeek" class="roll-peek" type="button" aria-label="Open your roll"><span>♡</span></button>
-          <button id="shutter" class="shutter" type="button" aria-label="Take photo"><span></span></button>
-          <button id="flipBtn" class="round-btn" type="button" aria-label="Flip camera">⟲</button>
-        </div>
-        <div class="mode-switch" role="tablist">
-          <button class="mode active" data-mode="photo" type="button">Photo</button>
-          <button class="mode" data-mode="video" type="button">Video</button>
-        </div>
-      </div>
+        <!-- FUNC / SET menu -->
+        <div id="menu" class="menu" hidden>
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="filters" type="button">LOOK</button>
+            <button class="tab" data-tab="adjust" type="button">ADJ</button>
+            <button class="tab" data-tab="effects" type="button">FX</button>
+            <button class="tab" data-tab="extras" type="button">DATE</button>
+            <button class="tab" data-tab="setup" type="button">SET</button>
+          </div>
 
-      <!-- media (photo/video file) controls -->
-      <div id="mediaControls" class="media-controls" hidden>
-        <button id="compareBtn" class="stamp stamp-small stamp-sky" type="button">◐ Hold to compare</button>
-        <span id="mediaInfo" class="info"></span>
-      </div>
-    </section>
+          <div class="panels">
+            <div class="panel active" id="panel-filters">
+              <div class="chips groups" id="filterGroups"></div>
+              <div class="filter-strip" id="filterStrip"></div>
+              <p class="filter-blurb" id="filterBlurb"></p>
+              <div class="slider" data-key="intensity"></div>
+            </div>
 
-    <!-- EDITOR -->
-    <section class="editor">
-      <div class="checker"></div>
-      <div class="tabs" role="tablist">
-        <button class="tab active" data-tab="filters" type="button">♡ Filters</button>
-        <button class="tab" data-tab="adjust" type="button">✿ Adjust</button>
-        <button class="tab" data-tab="effects" type="button">✧ Effects</button>
-        <button class="tab" data-tab="extras" type="button">✉ Extras</button>
-      </div>
+            <div class="panel" id="panel-adjust"></div>
 
-      <div class="panel active" id="panel-filters">
-        <div class="groups" id="filterGroups"></div>
-        <div class="filter-strip" id="filterStrip"></div>
-        <p class="filter-blurb" id="filterBlurb"></p>
-        <div class="slider" data-key="intensity"></div>
-      </div>
+            <div class="panel" id="panel-effects">
+              <button class="pix-btn" id="newLeakBtn" type="button">✦ NEW LIGHT LEAK</button>
+            </div>
 
-      <div class="panel" id="panel-adjust"></div>
-      <div class="panel" id="panel-effects">
-        <div class="panel-row">
-          <button class="stamp stamp-small stamp-butter" id="newLeakBtn" type="button">✦ New light leak</button>
-        </div>
-      </div>
+            <div class="panel" id="panel-extras">
+              <p class="menu-label">DATE STAMP</p>
+              <div class="chips" id="stampChips"></div>
+              <label class="field-row" id="customDateRow" hidden>
+                <span>DATE</span>
+                <input type="date" id="customDate">
+              </label>
+              <div class="chips" id="stampColorChips"></div>
+              <p class="menu-label">FRAME</p>
+              <div class="chips" id="frameChips"></div>
+              <label class="field-row" id="captionRow" hidden>
+                <span>CAPTION</span>
+                <input type="text" id="caption" maxlength="40" placeholder="summer, forever ♡">
+              </label>
+            </div>
 
-      <div class="panel" id="panel-extras">
-        <div class="extra-block">
-          <div class="section-heading"><span class="kicker">date stamp</span><span class="deco">✉</span></div>
-          <div class="chips" id="stampChips"></div>
-          <label class="field-row" id="customDateRow" hidden>
-            <span>Date</span>
-            <input type="date" id="customDate">
-          </label>
-          <div class="chips" id="stampColorChips"></div>
-        </div>
-        <div class="extra-block">
-          <div class="section-heading"><span class="kicker">frame</span><span class="deco">▢</span></div>
-          <div class="chips" id="frameChips"></div>
-          <label class="field-row" id="captionRow" hidden>
-            <span>Caption</span>
-            <input type="text" id="caption" maxlength="40" placeholder="summer, forever ♡">
-          </label>
-        </div>
-        <div class="extra-block">
-          <div class="section-heading"><span class="kicker">export</span><span class="deco">♡</span></div>
-          <div class="chips" id="qualityChips"></div>
+            <div class="panel" id="panel-setup">
+              <p class="menu-label">PICTURE SIZE</p>
+              <div class="chips" id="aspectChips"></div>
+              <p class="menu-label">GRID</p>
+              <div class="chips" id="gridChips"></div>
+              <p class="menu-label">SAVE QUALITY</p>
+              <div class="chips" id="qualityChips"></div>
+              <p class="menu-label">SOUNDS</p>
+              <div class="chips" id="soundChips"></div>
+            </div>
+          </div>
+
+          <div class="menu-foot">
+            <button id="resetBtn" class="pix-btn" type="button">RESET</button>
+            <button id="menuClose" class="pix-btn pix-on" type="button">SET</button>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ACTIONS -->
-    <section class="actions" id="actions">
-      <button id="resetBtn" class="stamp stamp-paper" type="button">Reset</button>
-      <button id="saveBtn" class="stamp stamp-hot" type="button" disabled>♡ Save</button>
-    </section>
+      <!-- painted side buttons -->
+      <button id="rollBtn" class="hit hit-pill p1" type="button" aria-label="Open your roll"><span>roll</span></button>
+      <label class="hit hit-pill p2" for="fileInput" aria-label="Open a photo or video to edit"><span>open</span>
+        <input type="file" id="fileInput" accept="image/*,video/*" hidden>
+      </label>
+      <button id="flipBtn" class="hit hit-pill p3" type="button" aria-label="Flip camera"><span>flip</span></button>
 
-    <!-- ROLL -->
-    <section class="roll" id="roll">
-      <div class="checker checker-olive"></div>
-      <div class="roll-inner">
-        <span class="kicker">what's on the film?</span>
-        <h2 class="script-sub">Your Roll</h2>
-        <div id="rollGrid" class="roll-grid"></div>
-        <p id="rollEmpty" class="roll-empty">Nothing developed yet. Snap something sweet ♡</p>
+      <!-- painted dial -->
+      <button class="hit hit-dp dp-up" id="dpUp" type="button" aria-label="Flash"></button>
+      <button class="hit hit-dp dp-right" id="dpRight" type="button" aria-label="Next look"></button>
+      <button class="hit hit-dp dp-down" id="dpDown" type="button" aria-label="Self-timer"></button>
+      <button class="hit hit-dp dp-left" id="dpLeft" type="button" aria-label="Previous look"></button>
+      <button class="hit hit-func" id="funcBtn" type="button" aria-label="Open menu"><span>menu</span></button>
+
+      <!-- painted slider: top = photo, bottom = video -->
+      <div class="mode-switch" role="tablist" aria-label="Photo or video">
+        <button class="hit mode active" data-mode="photo" type="button" aria-label="Photo"></button>
+        <button class="hit mode" data-mode="video" type="button" aria-label="Video"></button>
       </div>
-    </section>
+      <span class="hand mode-label" id="modeLabel">pic</span>
 
-    <footer class="footer">
-      <div class="checker"></div>
-      <p>made with love &amp; a little nostalgia ♡<br>photos stay on your phone</p>
-    </footer>
-  </main>
+      <!-- painted shutter bar -->
+      <button id="shutter" class="hit hit-shutter" type="button" aria-label="Turn camera on"><span id="shutterLabel">on ♡</span></button>
+
+      <!-- last shot, taped on -->
+      <button id="rollPeek" class="peek" type="button" aria-label="Last photo"><span>♡</span></button>
+    </main>
+
+    <p class="foot">swipe the screen for looks · hold it to compare</p>
+  </div>
+
+  <!-- ROLL SHEET -->
+  <section id="roll" class="roll-sheet" hidden>
+    <div class="roll-card">
+      <div class="roll-head">
+        <span class="tag">my roll</span>
+        <h2 class="hand-title">freshly developed</h2>
+        <button id="rollClose" class="close" type="button" aria-label="Close">✕</button>
+      </div>
+      <div id="rollGrid" class="roll-grid"></div>
+      <p id="rollEmpty" class="roll-empty">nothing developed yet. snap something sweet ♡</p>
+      <p class="roll-note">photos stay on your phone ♡</p>
+    </div>
+  </section>
 
   <!-- VIEWER -->
   <div id="viewer" class="viewer" hidden>
     <div class="viewer-card">
-      <button class="viewer-close" id="viewerClose" type="button" aria-label="Close">✕</button>
-      <span class="kicker tag">freshly developed</span>
+      <button class="close" id="viewerClose" type="button" aria-label="Close">✕</button>
+      <span class="tag">freshly developed</span>
       <div class="viewer-media" id="viewerMedia"></div>
       <div class="viewer-actions">
-        <button id="viewerShare" class="stamp stamp-hot" type="button">♡ Save to phone</button>
-        <button id="viewerEdit" class="stamp stamp-sky" type="button">✿ Re-edit</button>
-        <button id="viewerDelete" class="stamp stamp-paper" type="button">Toss</button>
+        <button id="viewerShare" class="pill pill-hot" type="button">save to phone ♡</button>
+        <button id="viewerEdit" class="pill" type="button">re-edit</button>
+        <button id="viewerDelete" class="pill pill-plain" type="button">toss</button>
       </div>
       <p class="viewer-hint" id="viewerHint">On iPhone, pick “Save Image” in the share sheet.</p>
     </div>
@@ -178,7 +201,7 @@
   <div id="toast" class="toast" hidden></div>
 
   <video id="video" playsinline muted hidden></video>
-  <script src="filters.js?v=7"></script>
-  <script src="script.js?v=7"></script>
+  <script src="filters.js?v=9"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>
