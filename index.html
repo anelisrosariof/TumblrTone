@@ -2,251 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fce0e6">
-
-  <title>Tumblr Tone — Digital Darkroom</title>
-
-  <link rel="stylesheet" href="style.css?v=6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Tumblr Tone">
+  <meta name="description" content="A little digital darkroom: live camera filters, film looks, date stamps and light leaks.">
+  <title>Tumblr Tone</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
-
 <body>
+  <main class="postcard">
 
-  <main class="app-wrapper">
-
-    <!-- HEADER -->
     <header class="app-header">
-      <span class="kicker">THE DIGITAL DARKROOM · EST. 2014</span>
-
+      <span class="sticker s1" aria-hidden="true">♥</span>
+      <span class="sticker s2" aria-hidden="true">★</span>
+      <span class="kicker tag">the digital darkroom · est. 2014</span>
       <h1 class="script-title">Tumblr Tone</h1>
-
-      <p class="subtitle">
-        / love letters & digital aesthetics
-      </p>
+      <p class="subtitle">live camera filters, film looks &amp; little love letters</p>
     </header>
 
-    <!-- UPLOAD CONTROLS -->
-    <section class="upload-section">
-      <div class="controls-bar">
+    <!-- SOURCE PICKER -->
+    <nav class="source-bar" aria-label="Choose a source">
+      <button id="cameraBtn" class="stamp" type="button">✧ Camera</button>
+      <label class="stamp stamp-sky" for="fileInput">
+        ♡ From Roll
+        <input type="file" id="fileInput" accept="image/*,video/*" hidden>
+      </label>
+    </nav>
 
-        <label class="custom-file-upload" for="fileInput">
-          <input
-            type="file"
-            id="fileInput"
-            accept="image/*"
-            hidden
-          >
-          ♡ Choose Photo
-        </label>
-
-        <button id="cameraBtn" type="button">
-          ✧ Live Camera
-        </button>
-
-      </div>
-    </section>
-
-    <!-- PHOTO PREVIEW -->
-    <section class="preview-section">
-
+    <!-- STAGE -->
+    <section class="stage-wrap">
       <div class="section-heading">
-        <span class="kicker">YOUR LITTLE MASTERPIECE</span>
-        <span class="section-decoration">✳</span>
+        <span class="kicker" id="stageKicker">your little masterpiece</span>
+        <span class="deco">✳</span>
       </div>
 
-      <div class="photo-stage">
-
-        <div id="canvas-container">
-          <canvas id="canvas"></canvas>
+      <div id="stage" class="stage">
+        <div id="frameBox" class="frame-box">
+          <canvas id="out"></canvas>
+          <div id="gridOverlay" class="grid-overlay" hidden></div>
+          <div id="countdown" class="countdown" hidden></div>
+          <div id="recBadge" class="rec-badge" hidden>● REC <span id="recTime">0:00</span></div>
         </div>
 
         <div id="emptyState" class="empty-state">
           <span class="empty-heart">♡</span>
-          <h2>Your photo goes here</h2>
-          <p>Choose a photo to start making memories.</p>
+          <h2>Say cheese</h2>
+          <p>Open the camera for live filters, or pick a photo or video from your roll.</p>
         </div>
 
+        <div id="flash" class="flash"></div>
       </div>
 
-      <div class="preview-toolbar">
-
-        <button id="compareBtn" class="small-button" type="button">
-          ◐ Hold to Compare
-        </button>
-
-        <span id="imageInfo">NO PHOTO LOADED</span>
-
+      <!-- camera controls -->
+      <div id="cameraControls" class="camera-controls" hidden>
+        <div class="cam-options">
+          <button class="chip" id="aspectBtn" type="button">3:4</button>
+          <button class="chip" id="timerBtn" type="button">⏱ off</button>
+          <button class="chip" id="flashBtn" type="button">⚡ off</button>
+          <button class="chip" id="gridBtn" type="button">▦ grid</button>
+        </div>
+        <div class="shutter-row">
+          <button id="rollPeek" class="roll-peek" type="button" aria-label="Open your roll"><span>♡</span></button>
+          <button id="shutter" class="shutter" type="button" aria-label="Take photo"><span></span></button>
+          <button id="flipBtn" class="round-btn" type="button" aria-label="Flip camera">⟲</button>
+        </div>
+        <div class="mode-switch" role="tablist">
+          <button class="mode active" data-mode="photo" type="button">Photo</button>
+          <button class="mode" data-mode="video" type="button">Video</button>
+        </div>
       </div>
 
+      <!-- media (photo/video file) controls -->
+      <div id="mediaControls" class="media-controls" hidden>
+        <button id="compareBtn" class="stamp stamp-small stamp-sky" type="button">◐ Hold to compare</button>
+        <span id="mediaInfo" class="info"></span>
+      </div>
     </section>
 
     <!-- EDITOR -->
-    <section class="editor-section">
-
-      <div class="checker-strip"></div>
-
-      <!-- CATEGORY TABS -->
-      <div class="editor-tabs">
-        <button class="tab active" data-tab="filters">
-          ♡ Filters
-        </button>
-
-        <button class="tab" data-tab="adjust">
-          ✿ Adjust
-        </button>
-
-        <button class="tab" data-tab="effects">
-          ✧ Effects
-        </button>
+    <section class="editor">
+      <div class="checker"></div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="filters" type="button">♡ Filters</button>
+        <button class="tab" data-tab="adjust" type="button">✿ Adjust</button>
+        <button class="tab" data-tab="effects" type="button">✧ Effects</button>
+        <button class="tab" data-tab="extras" type="button">✉ Extras</button>
       </div>
 
-      <!-- FILTER PANEL -->
-      <div id="filtersPanel" class="editor-panel active">
-
-        <div class="section-heading">
-          <span class="kicker">PICK YOUR MOOD</span>
-          <span class="section-decoration">♡</span>
-        </div>
-
-        <div id="filters" class="filter-list">
-
-          <button data-filter="none" class="active">
-            Original
-          </button>
-
-          <button data-filter="bleach">
-            Bleach Bypass
-          </button>
-
-          <button data-filter="2014">
-            2014
-          </button>
-
-          <button data-filter="nashville">
-            Nashville
-          </button>
-
-          <button data-filter="amaro">
-            Amaro
-          </button>
-
-          <button data-filter="valencia">
-            Valencia
-          </button>
-
-          <button data-filter="1977">
-            1977
-          </button>
-
-          <button data-filter="keef">
-            Keef
-          </button>
-
-          <button data-filter="nuke">
-            Nuke
-          </button>
-
-          <button data-filter="haunted">
-            Haunted
-          </button>
-
-          <button data-filter="purple">
-            Purple Pixie
-          </button>
-
-          <button data-filter="moon">
-            Moon
-          </button>
-
-        </div>
-
-        <div class="slider-group">
-          <div class="slider-heading">
-            <label for="filterIntensity">Filter Intensity</label>
-            <output id="filterIntensityValue">100</output>
-          </div>
-
-          <input
-            type="range"
-            id="filterIntensity"
-            min="0"
-            max="100"
-            value="100"
-          >
-        </div>
-
+      <div class="panel active" id="panel-filters">
+        <div class="groups" id="filterGroups"></div>
+        <div class="filter-strip" id="filterStrip"></div>
+        <p class="filter-blurb" id="filterBlurb"></p>
+        <div class="slider" data-key="intensity"></div>
       </div>
 
-      <!-- ADJUST PANEL -->
-      <div id="adjustPanel" class="editor-panel">
-
-        <div class="section-heading">
-          <span class="kicker">THE LITTLE DETAILS</span>
-          <span class="section-decoration">✿</span>
+      <div class="panel" id="panel-adjust"></div>
+      <div class="panel" id="panel-effects">
+        <div class="panel-row">
+          <button class="stamp stamp-small stamp-butter" id="newLeakBtn" type="button">✦ New light leak</button>
         </div>
-
-        <div id="adjustmentControls"></div>
-
       </div>
 
-      <!-- EFFECTS PANEL -->
-      <div id="effectsPanel" class="editor-panel">
-
-        <div class="section-heading">
-          <span class="kicker">A LITTLE MAGIC</span>
-          <span class="section-decoration">✧</span>
+      <div class="panel" id="panel-extras">
+        <div class="extra-block">
+          <div class="section-heading"><span class="kicker">date stamp</span><span class="deco">✉</span></div>
+          <div class="chips" id="stampChips"></div>
+          <label class="field-row" id="customDateRow" hidden>
+            <span>Date</span>
+            <input type="date" id="customDate">
+          </label>
+          <div class="chips" id="stampColorChips"></div>
         </div>
-
-        <div id="effectControls"></div>
-
+        <div class="extra-block">
+          <div class="section-heading"><span class="kicker">frame</span><span class="deco">▢</span></div>
+          <div class="chips" id="frameChips"></div>
+          <label class="field-row" id="captionRow" hidden>
+            <span>Caption</span>
+            <input type="text" id="caption" maxlength="40" placeholder="summer, forever ♡">
+          </label>
+        </div>
+        <div class="extra-block">
+          <div class="section-heading"><span class="kicker">export</span><span class="deco">♡</span></div>
+          <div class="chips" id="qualityChips"></div>
+        </div>
       </div>
-
     </section>
 
     <!-- ACTIONS -->
-    <section class="action-section">
-
-      <button id="resetBtn" class="secondary-button">
-        Reset
-      </button>
-
-      <button id="downloadBtn">
-        ♡ Save Photo
-      </button>
-
+    <section class="actions" id="actions">
+      <button id="resetBtn" class="stamp stamp-paper" type="button">Reset</button>
+      <button id="saveBtn" class="stamp stamp-hot" type="button" disabled>♡ Save</button>
     </section>
 
-    <!-- EXPORT OPTIONS -->
-    <div class="export-options">
+    <!-- ROLL -->
+    <section class="roll" id="roll">
+      <div class="checker checker-olive"></div>
+      <div class="roll-inner">
+        <span class="kicker">what's on the film?</span>
+        <h2 class="script-sub">Your Roll</h2>
+        <div id="rollGrid" class="roll-grid"></div>
+        <p id="rollEmpty" class="roll-empty">Nothing developed yet. Snap something sweet ♡</p>
+      </div>
+    </section>
 
-      <label for="exportFormat">SAVE AS</label>
-
-      <select id="exportFormat">
-        <option value="image/png">PNG</option>
-        <option value="image/jpeg">JPEG</option>
-      </select>
-
-      <label for="exportQuality">QUALITY</label>
-
-      <select id="exportQuality">
-        <option value="1">100%</option>
-        <option value="0.9" selected>90%</option>
-        <option value="0.8">80%</option>
-        <option value="0.7">70%</option>
-      </select>
-
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="app-footer">
-      <div class="checker-strip"></div>
-
-      <p>MADE WITH LOVE & A LITTLE NOSTALGIA ♡</p>
+    <footer class="footer">
+      <div class="checker"></div>
+      <p>made with love &amp; a little nostalgia ♡<br>photos stay on your phone</p>
     </footer>
-
   </main>
 
-  <script src="script.js?v=6"></script>
+  <!-- VIEWER -->
+  <div id="viewer" class="viewer" hidden>
+    <div class="viewer-card">
+      <button class="viewer-close" id="viewerClose" type="button" aria-label="Close">✕</button>
+      <span class="kicker tag">freshly developed</span>
+      <div class="viewer-media" id="viewerMedia"></div>
+      <div class="viewer-actions">
+        <button id="viewerShare" class="stamp stamp-hot" type="button">♡ Save to phone</button>
+        <button id="viewerEdit" class="stamp stamp-sky" type="button">✿ Re-edit</button>
+        <button id="viewerDelete" class="stamp stamp-paper" type="button">Toss</button>
+      </div>
+      <p class="viewer-hint" id="viewerHint">On iPhone, pick “Save Image” in the share sheet.</p>
+    </div>
+  </div>
 
+  <div id="toast" class="toast" hidden></div>
+
+  <video id="video" playsinline muted hidden></video>
+  <script src="filters.js?v=7"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>
