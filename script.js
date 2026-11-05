@@ -38,6 +38,7 @@
     { key: "halation", label: "Halation (red halos)" },
     { key: "flash", label: "Flash pop" },
     { key: "chroma", label: "Chromatic fringe" },
+    { key: "oldphone", label: "Old phone sensor" },
     { key: "lowres", label: "Low-res digicam" },
     { key: "sharpen", label: "Crunchy sharpen" }
   ].map((d) => ({ ...d, min: 0, max: 100 }));
@@ -162,7 +163,7 @@
     uniform float pSat, pCon, pBri, pFade, pTemp, pTint, pMono;
     uniform vec3 pSh, pHi;
     uniform float aExp, aCon, aSat, aTemp, aTint, aHi, aSh, aFade;
-    uniform float eGrain, eVig, eGlow, eHal, eCA, eLeak, eDust, ePix, eSharp, eFlash;
+    uniform float eGrain, eVig, eGlow, eHal, eCA, eLeak, eDust, ePix, eSharp, eFlash, eOld;
 
     const vec3 W = vec3(0.299, 0.587, 0.114);
 
@@ -211,6 +212,21 @@
         vec3 n = tex(uv + vec2(px.x, 0.0)) + tex(uv - vec2(px.x, 0.0)) +
                  tex(uv + vec2(0.0, px.y)) + tex(uv - vec2(0.0, px.y));
         c += (c - n * 0.25) * eSharp * 1.6;
+      }
+
+      // old phone sensor, part 1: soft optics, JPEG chroma blocks, oversharpening.
+      // Sizes are in "sensor pixels" of a ~900-row image so preview and saved photo match.
+      if (eOld > 0.0) {
+        vec2 sp = vec2(1.0 / (900.0 * aspect), 1.0 / 900.0);
+        vec3 b1 = (tex(uv + vec2(sp.x, 0.0)) + tex(uv - vec2(sp.x, 0.0)) +
+                   tex(uv + vec2(0.0, sp.y)) + tex(uv - vec2(0.0, sp.y))) * 0.25;
+        c = mix(c, b1, eOld * 0.6);
+        vec2 cells = vec2(900.0 * aspect, 900.0) / 4.0;
+        vec3 cb = tex((floor(uv * cells) + 0.5) / cells);
+        c = mix(c, vec3(dot(c, W)) + (cb - dot(cb, W)), eOld * 0.65);
+        vec3 b2 = (tex(uv + vec2(sp.x * 2.5, 0.0)) + tex(uv - vec2(sp.x * 2.5, 0.0)) +
+                   tex(uv + vec2(0.0, sp.y * 2.5)) + tex(uv - vec2(0.0, sp.y * 2.5))) * 0.25;
+        c += (c - b2) * eOld * 0.8;
       }
 
       // glow + halation: ring of highlight samples
@@ -305,6 +321,22 @@
         n = n / 1.5 - 0.5;
         float lm = clamp(dot(c, W), 0.0, 1.0);
         c += n * eGrain * 0.32 * (0.5 + lm * (1.0 - lm) * 2.0);
+      }
+
+      // old phone sensor, part 2: speckly luma noise, blotchy colour noise in the
+      // shadows, and clipped highlights
+      if (eOld > 0.0) {
+        float tt = floor(uTime * 24.0) * uLive;
+        vec2 g = vUv * vec2(aspect, 1.0) * 900.0;
+        float lm = clamp(dot(c, W), 0.0, 1.0);
+        float dark = 1.0 - smoothstep(0.0, 0.7, lm);
+        float ln = hash(floor(g) + vec2(tt * 1.7, tt * 2.3)) - 0.5;
+        vec2 g2 = g / 2.6 + tt * 3.1;
+        vec3 cn = vec3(vnoise(g2), vnoise(g2 + 31.7), vnoise(g2 + 67.3)) - 0.5;
+        cn -= dot(cn, W);
+        c += ln * eOld * (0.05 + 0.11 * dark);
+        c += cn * eOld * (0.12 + 0.30 * dark);
+        c = mix(c, smoothstep(0.0, 0.92, c), eOld * 0.45);
       }
 
       gl_FragColor = vec4(clamp(c, 0.0, 1.0), 1.0);
@@ -434,6 +466,7 @@
     gl.uniform1f(U.ePix, mix(e.lowres, fx.pix));
     gl.uniform1f(U.eSharp, mix(e.sharpen, fx.sharp));
     gl.uniform1f(U.eFlash, mix(e.flash, fx.flash));
+    gl.uniform1f(U.eOld, mix(e.oldphone, fx.old));
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }

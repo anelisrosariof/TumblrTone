@@ -37,19 +37,19 @@
     P({ id: "4s", name: "4S", group: "cams", cam: "phone", blurb: "2011 phone camera: warm mids, highlights that blow out soft, a little noise.",
       r: [6, 70, 140, 212, 255], g: [4, 66, 136, 206, 252], b: [0, 54, 118, 186, 236],
       sat: 0.05, con: 0.05, bri: 0.03, temp: 0.12, fade: 0.05,
-      fx: { grain: 0.22, vig: 0.28, sharp: 0.25, glow: 0.1 } }),
+      fx: { old: 0.9, grain: 0.06, vig: 0.32, glow: 0.18 } }),
     P({ id: "5c", name: "5C", group: "cams", cam: "phone", blurb: "Candy phone, 2013: cooler, punchy and over-sharpened.",
       r: [0, 60, 132, 206, 255], g: [2, 64, 134, 208, 255], b: [8, 72, 142, 214, 255],
       sat: 0.18, con: 0.15, temp: -0.06,
-      fx: { sharp: 0.35, grain: 0.15, vig: 0.18 } }),
+      fx: { old: 0.8, sharp: 0.15, vig: 0.22, glow: 0.08 } }),
     P({ id: "ix", name: "IX", group: "cams", cam: "digicam", blurb: "2004 CCD compact: blue cast, harsh flash, crunchy edges.",
       r: [0, 58, 130, 210, 255], g: [4, 66, 138, 214, 255], b: [16, 82, 152, 222, 255],
       sat: 0.1, con: 0.12, bri: 0.04, temp: -0.12,
-      fx: { flash: 0.35, sharp: 0.3, grain: 0.2, pix: 0.1, ca: 0.15 } }),
+      fx: { old: 0.7, flash: 0.35, ca: 0.15, vig: 0.2 } }),
     P({ id: "fj", name: "FJ", group: "cams", cam: "digicam", blurb: "Teal-green compact with rosy skin. Point, shoot, 2006.",
       r: [4, 66, 140, 210, 255], g: [10, 72, 136, 204, 250], b: [8, 68, 130, 196, 244],
       sat: 0.08, con: 0.1, sh: [-0.03, 0.03, 0.02], hi: [0.04, 0, 0.02],
-      fx: { grain: 0.2, vig: 0.2, sharp: 0.2 } }),
+      fx: { old: 0.65, vig: 0.22 } }),
     P({ id: "cine07", name: "Cine 07", group: "cams", cam: "film", blurb: "Motion-picture film: soft contrast, teal shadows, warm skin, red halos.",
       r: [14, 70, 136, 206, 250], g: [14, 70, 134, 200, 244], b: [22, 76, 130, 190, 232],
       sat: -0.05, con: -0.08, fade: 0.1, sh: [-0.03, 0.01, 0.03], hi: [0.04, 0.02, -0.02],
@@ -57,7 +57,7 @@
     P({ id: "kh", name: "KH Webcam", group: "cams", cam: "digicam", blurb: "2009 laptop webcam: green smear, chunky pixels.",
       r: [10, 62, 124, 196, 250], g: [16, 74, 140, 210, 255], b: [8, 56, 116, 186, 240],
       sat: -0.15, con: 0.1, bri: -0.04,
-      fx: { pix: 0.55, grain: 0.45, ca: 0.25, vig: 0.3 } }),
+      fx: { old: 1, pix: 0.35, ca: 0.25, vig: 0.35 } }),
 
     // ---------- THE ROLL (Bleach Bypass-style picks) ----------
     P({ id: "kiev", name: "Kiev", group: "roll", blurb: "Old rangefinder film: muted, yellow-green, heavy corners.",
@@ -181,19 +181,19 @@
     P({ id: "digi07", name: "Digicam '07", group: "digicam", blurb: "Point-and-shoot at the party: cool cast, crunchy edges, blown flash.",
       r: [0, 60, 132, 210, 255], g: [0, 64, 136, 212, 255], b: [8, 74, 148, 220, 255],
       sat: 0.18, con: 0.12, bri: 0.0, temp: -0.18,
-      fx: { sharp: 0.55, ca: 0.25, flash: 0.35, grain: 0.1 } }),
+      fx: { old: 0.6, sharp: 0.55, ca: 0.25, flash: 0.35, grain: 0.1 } }),
     P({ id: "ccd", name: "CCD", group: "digicam", blurb: "Old sensor bloom and that slightly green daylight.",
       r: [0, 62, 130, 204, 255], g: [2, 68, 136, 208, 255], b: [0, 60, 126, 200, 250],
       sat: 0.1, con: 0.12, tint: 0.08,
-      fx: { glow: 0.3, sharp: 0.4, ca: 0.15 } }),
+      fx: { old: 0.6, glow: 0.3, sharp: 0.4, ca: 0.15 } }),
     P({ id: "webcam", name: "Webcam", group: "digicam", blurb: "Low-res, noisy, slightly purple. MySpace profile pic.",
       r: [10, 66, 128, 194, 248], g: [4, 58, 122, 188, 244], b: [16, 72, 136, 198, 250],
       sat: -0.1, con: 0.1, bri: 0.04,
-      fx: { pix: 0.35, grain: 0.3, ca: 0.3 } }),
+      fx: { old: 0.85, pix: 0.35, grain: 0.3, ca: 0.3 } }),
     P({ id: "night", name: "Night Out", group: "digicam", blurb: "Direct flash on a dark night: bright faces, black background.",
       r: [0, 40, 124, 214, 255], g: [0, 40, 122, 210, 255], b: [0, 46, 126, 206, 250],
       sat: 0.15, con: 0.3, bri: -0.05,
-      fx: { flash: 0.6, vig: 0.5, sharp: 0.3, grain: 0.15 } }),
+      fx: { old: 0.7, flash: 0.6, vig: 0.5, sharp: 0.3, grain: 0.15 } }),
 
     // ---------- FILM ----------
     P({ id: "disposable", name: "Disposable", group: "film", blurb: "Throwaway camera on holiday: warm, grainy, light leaking in.",
@@ -234,6 +234,9 @@
       r: [0, 24, 120, 236, 255], g: [0, 24, 120, 236, 255], b: [0, 24, 120, 236, 255],
       con: 0.4, fx: { grain: 0.55, dust: 0.4, sharp: 0.4 } })
   ];
+
+  // Every roll look is a digicam look: give it the old-sensor texture too.
+  FILTERS.forEach((f) => { if ((f.group === "roll") && f.fx.old == null) f.fx.old = 0.5; });
 
   window.TT_GROUPS = GROUPS;
   window.TT_FILTERS = FILTERS;
