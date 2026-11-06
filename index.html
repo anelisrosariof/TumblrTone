@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body class="mode-empty" data-body="pink">
   <div class="desk">
@@ -89,6 +89,7 @@
           <button class="tab" data-tab="adjust" type="button">ADJ</button>
           <button class="tab" data-tab="effects" type="button">FX</button>
           <button class="tab" data-tab="extras" type="button">DATE</button>
+          <button class="tab" data-tab="stickers" type="button">STKR</button>
           <button class="tab" data-tab="setup" type="button">CAM</button>
         </div>
 
@@ -120,6 +121,21 @@
               <span>CAPTION</span>
               <input type="text" id="caption" maxlength="40" placeholder="summer, forever ♡">
             </label>
+          </div>
+
+          <div class="panel" id="panel-stickers">
+            <p class="menu-label">TAP TO ADD · DRAG ON THE PHOTO · PINCH TO SIZE &amp; TURN</p>
+            <div class="sticker-grid" id="stickerGrid"></div>
+            <label class="pix-btn own-btn" for="stickerFile">+ YOUR OWN PICTURE
+              <input type="file" id="stickerFile" accept="image/*" hidden>
+            </label>
+            <label class="field-row"><span>SIZE</span>
+              <input type="range" id="stickerSize" min="6" max="160" value="32">
+            </label>
+            <div class="sticker-actions">
+              <button class="pix-btn" id="stickerDel" type="button">REMOVE</button>
+              <button class="pix-btn" id="stickerClear" type="button">CLEAR ALL</button>
+            </div>
           </div>
 
           <div class="panel" id="panel-setup">
@@ -224,7 +240,7 @@
   <div id="toast" class="toast" hidden></div>
 
   <video id="video" playsinline muted hidden></video>
-  <script src="filters.js?v=15"></script>
-  <script src="script.js?v=15"></script>
+  <script src="filters.js?v=16"></script>
+  <script src="script.js?v=16"></script>
 </body>
 </html>

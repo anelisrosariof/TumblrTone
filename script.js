@@ -76,7 +76,8 @@
     stampColor: STAMP_COLORS[0],
     customDate: "",
     frame: "none",
-    caption: ""
+    caption: "",
+    stickers: []
   });
 
   let S = defaults();
@@ -94,6 +95,7 @@
     grid: false,
     quality: "full",
     sound: true,
+    selSticker: -1,
     recorder: null,
     comparing: false,
     busy: false,
@@ -640,6 +642,44 @@
     }
   }
 
+  // ---------- stickers ----------
+  const STICKER_ART = ["bow", "heart", "lily", "sparkle", "gummy", "star-button", "cassette", "ticket", "film", "jam", "mug", "purse", "sunglasses", "hair-clip", "polaroids"];
+  const stickerImgs = {};
+  function stickerImg(src) {
+    let im = stickerImgs[src];
+    if (!im) { im = stickerImgs[src] = new Image(); im.onload = () => scheduleRender(); im.src = src; }
+    return im.complete && im.naturalWidth ? im : null;
+  }
+  function stickerBox(L, k) {
+    const im = stickerImg(k.src);
+    const size = k.s * Math.min(L.w, L.h);
+    const ar = im ? im.naturalHeight / im.naturalWidth : 1;
+    const dw = ar > 1 ? size / ar : size, dh = ar > 1 ? size : size * ar;
+    return { im, cx: L.x + k.x * L.w, cy: L.y + k.y * L.h, dw, dh };
+  }
+  function drawStickers(ctx, L, st, showSel) {
+    (st.stickers || []).forEach((k, i) => {
+      const b = stickerBox(L, k);
+      if (!b.im) return;
+      ctx.save();
+      ctx.translate(b.cx, b.cy);
+      ctx.rotate(k.r || 0);
+      ctx.shadowColor = "rgba(40, 20, 20, 0.25)";
+      ctx.shadowBlur = b.dw * 0.04;
+      ctx.shadowOffsetY = b.dw * 0.02;
+      ctx.drawImage(b.im, -b.dw / 2, -b.dh / 2, b.dw, b.dh);
+      if (showSel && i === app.selSticker) {
+        ctx.shadowColor = "transparent";
+        ctx.setLineDash([L.u * 0.02, L.u * 0.015]);
+        ctx.lineWidth = Math.max(2, L.u * 0.005);
+        ctx.strokeStyle = "#e8ccd8";
+        ctx.strokeRect(-b.dw / 2 - 4, -b.dh / 2 - 4, b.dw + 8, b.dh + 8);
+      }
+      ctx.restore();
+    });
+  }
+  function stickerEditing() { return !$("menu").hidden && $("panel-stickers").classList.contains("active"); }
+
   /* Render the full picture (GL + frame + stamp) into a 2D canvas. */
   function compose(target, tex, srcW, srcH, iw, ih, opts = {}) {
     const st = opts.settings || S;
@@ -651,6 +691,8 @@
     if (!plain) drawUnder(ctx, L, st);
     ctx.drawImage(glCanvas, L.x, L.y, L.w, L.h);
     if (!plain) drawOver(ctx, L, st);
+    if (!plain) drawStickers(ctx, L, st, target === out && stickerEditing());
+    if (target === out) outL = L;
     return target;
   }
 
@@ -685,6 +727,7 @@
   // ======================================================
 
   const out = $("out");
+  let outL = null;
   let renderQueued = false, loopOn = false;
 
   function renderPreview() {
@@ -876,6 +919,7 @@
     paintBody();
     makeChips($("soundChips"), [{ id: "on", name: "Beep" }, { id: "off", name: "Quiet" }], () => (app.sound ? "on" : "off"), (v) => { app.sound = v === "on"; });
 
+    paintStickerPanel();
     // tabs
     document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
       document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("active", x === t));
@@ -908,6 +952,46 @@
     const st = $("strap");
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
+  // sticker panel
+  let ownStickers = [];
+  try { ownStickers = JSON.parse(localStorage.getItem("tt-own-stickers") || "[]"); } catch (e) {}
+  function addSticker(src) {
+    S.stickers = S.stickers || [];
+    S.stickers.push({ src, x: 0.5, y: 0.5, s: 0.32, r: (Math.random() - 0.5) * 0.4 });
+    app.selSticker = S.stickers.length - 1;
+    beep(1500, 0.03);
+    scheduleRender();
+  }
+  function paintStickerPanel() {
+    const g = $("stickerGrid");
+    g.innerHTML = "";
+    const all = STICKER_ART.map((n) => `img/${n}.webp`).concat(ownStickers);
+    all.forEach((src) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "stk";
+      b.innerHTML = `<img src="${src}" alt="">`;
+      b.setAttribute("aria-label", "Add sticker");
+      b.addEventListener("click", () => addSticker(src));
+      g.appendChild(b);
+    });
+  }
+  async function loadOwnSticker(file) {
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = url; });
+    const k = Math.min(1, 400 / Math.max(im.width, im.height));
+    const c = document.createElement("canvas");
+    c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    const src = c.toDataURL(file.type === "image/jpeg" ? "image/jpeg" : "image/png", 0.9);
+    ownStickers.unshift(src);
+    ownStickers = ownStickers.slice(0, 12);
+    try { localStorage.setItem("tt-own-stickers", JSON.stringify(ownStickers)); } catch (e) {}
+    paintStickerPanel();
+    addSticker(src);
+  }
+
   function setDevice(id) {
     device = id;
     try { localStorage.setItem("tt-device", id); } catch (e) {}
@@ -1552,7 +1636,88 @@
     // screen: swipe to change looks, hold to compare (when editing)
     let downX = null, downY = 0, holdTimer = null;
     const off = () => { clearTimeout(holdTimer); if (app.comparing) { app.comparing = false; scheduleRender(); } };
+    // stickers: drag to move, pinch to size and turn (while the STICKER tab is open)
+    const pts = new Map();
+    let pinch = null;
+    const toPhoto = (cx, cy) => {
+      if (!outL) return null;
+      const r = out.getBoundingClientRect();
+      const cover = app.mode === "camera";
+      const k = (cover ? Math.max : Math.min)(r.width / out.width, r.height / out.height);
+      const px = (cx - r.left - (r.width - out.width * k) / 2) / k;
+      const py = (cy - r.top - (r.height - out.height * k) / 2) / k;
+      return { x: (px - outL.x) / outL.w, y: (py - outL.y) / outL.h, px, py };
+    };
+    const hitSticker = (p) => {
+      for (let i = S.stickers.length - 1; i >= 0; i--) {
+        const k = S.stickers[i], b = stickerBox(outL, k);
+        const dx = p.px - b.cx, dy = p.py - b.cy, a = -(k.r || 0);
+        const lx = dx * Math.cos(a) - dy * Math.sin(a), ly = dx * Math.sin(a) + dy * Math.cos(a);
+        if (Math.abs(lx) < b.dw / 2 + 10 && Math.abs(ly) < b.dh / 2 + 10) return i;
+      }
+      return -1;
+    };
     out.addEventListener("pointerdown", (e) => {
+      if (!stickerEditing() || !(S.stickers || []).length) return;
+      const p = toPhoto(e.clientX, e.clientY);
+      if (!p) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      try { out.setPointerCapture(e.pointerId); } catch (err) {}
+      if (pts.size === 1) {
+        const i = hitSticker(p);
+        if (i >= 0) app.selSticker = i;
+        const k = (S.stickers || [])[app.selSticker];
+        if (k) app.dragSticker = { dx: k.x - p.x, dy: k.y - p.y, hit: i >= 0 };
+      } else if (pts.size === 2 && (S.stickers || [])[app.selSticker]) {
+        const [a, b] = [...pts.values()];
+        const k = (S.stickers || [])[app.selSticker];
+        pinch = { d: Math.hypot(b.x - a.x, b.y - a.y), ang: Math.atan2(b.y - a.y, b.x - a.x), s: k.s, r: k.r || 0 };
+        app.dragSticker = null;
+      }
+      scheduleRender();
+    }, true);
+    out.addEventListener("pointermove", (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const k = (S.stickers || [])[app.selSticker];
+      if (!k) return;
+      if (pinch && pts.size >= 2) {
+        const [a, b] = [...pts.values()];
+        k.s = Math.max(0.06, Math.min(1.6, pinch.s * Math.hypot(b.x - a.x, b.y - a.y) / pinch.d));
+        k.r = pinch.r + Math.atan2(b.y - a.y, b.x - a.x) - pinch.ang;
+        $("stickerSize").value = Math.round(k.s * 100);
+      } else if (app.dragSticker && app.dragSticker.hit) {
+        const p = toPhoto(e.clientX, e.clientY);
+        k.x = Math.max(0, Math.min(1, p.x + app.dragSticker.dx));
+        k.y = Math.max(0, Math.min(1, p.y + app.dragSticker.dy));
+      }
+      scheduleRender();
+    });
+    const lift = (e) => {
+      pts.delete(e.pointerId);
+      if (pts.size < 2) pinch = null;
+      if (!pts.size) app.dragSticker = null;
+    };
+    out.addEventListener("pointerup", lift, true);
+    out.addEventListener("pointercancel", lift, true);
+
+    $("stickerFile").addEventListener("change", (e) => {
+      const f = e.target.files[0];
+      e.target.value = "";
+      if (f) loadOwnSticker(f).catch(() => toast("Couldn't open that picture"));
+    });
+    $("stickerSize").addEventListener("input", (e) => {
+      const k = (S.stickers || [])[app.selSticker];
+      if (k) { k.s = e.target.value / 100; scheduleRender(); }
+    });
+    $("stickerDel").addEventListener("click", () => {
+      if ((S.stickers || [])[app.selSticker]) { S.stickers.splice(app.selSticker, 1); app.selSticker = S.stickers.length - 1; scheduleRender(); }
+    });
+    $("stickerClear").addEventListener("click", () => { S.stickers = []; app.selSticker = -1; scheduleRender(); });
+    document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => scheduleRender()));
+
+    out.addEventListener("pointerdown", (e) => {
+      if (stickerEditing() && (S.stickers || []).length) { downX = null; return; }
       downX = e.clientX; downY = e.clientY;
       if (app.mode === "image" || app.mode === "video") {
         holdTimer = setTimeout(() => { app.comparing = true; scheduleRender(); }, 180);
