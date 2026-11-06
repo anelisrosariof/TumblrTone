@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body class="mode-empty" data-body="pink">
   <div class="desk">
@@ -166,16 +166,21 @@
 
       <!-- sticker controls for the phone and compact bodies -->
       <nav class="deck" id="deck" aria-label="Camera controls">
-        <button type="button" data-for="rollBtn">roll</button>
-        <button type="button" data-for="fileInput">open</button>
-        <button type="button" data-for="dpLeft" aria-label="Previous look">◀</button>
-        <button type="button" data-for="funcBtn">menu</button>
-        <button type="button" data-for="dpRight" aria-label="Next look">▶</button>
-        <button type="button" data-for="dpUp" id="deckFlash">flash</button>
-        <button type="button" data-for="dpDown" id="deckTimer">timer</button>
-        <button type="button" data-for="mode" id="deckMode">pic</button>
-        <button type="button" data-for="flipBtn">flip</button>
-        <button type="button" data-for="shutter" class="d-shutter" id="deckShutter">on ♡</button>
+        <div class="deck-row">
+          <button type="button" data-for="dpUp" id="deckFlash">flash</button>
+          <button type="button" data-for="dpDown" id="deckTimer">timer</button>
+          <button type="button" data-for="dpLeft" aria-label="Previous look">◀</button>
+          <button type="button" data-for="funcBtn">edit</button>
+          <button type="button" data-for="dpRight" aria-label="Next look">▶</button>
+          <button type="button" data-for="mode" id="deckMode">pic</button>
+        </div>
+        <div class="deck-row">
+          <button type="button" data-for="rollBtn" class="d-side" id="deckRoll" aria-label="Open your roll"></button>
+          <button type="button" data-for="fileInput">open</button>
+          <button type="button" data-for="shutter" class="d-shutter" id="deckShutter">on ♡</button>
+          <button type="button" data-for="flipBtn">flip</button>
+          <button type="button" data-for="funcBtn" class="d-side" aria-label="Edit">✎</button>
+        </div>
       </nav>
 
       <!-- last shot, taped on -->
@@ -217,7 +222,7 @@
   <div id="toast" class="toast" hidden></div>
 
   <video id="video" playsinline muted hidden></video>
-  <script src="filters.js?v=13"></script>
-  <script src="script.js?v=13"></script>
+  <script src="filters.js?v=14"></script>
+  <script src="script.js?v=14"></script>
 </body>
 </html>

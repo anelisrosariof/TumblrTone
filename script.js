@@ -896,7 +896,7 @@
     const body = BODY_FOR[S.filterId] || "pink";
     if (document.body.dataset.body === body) return;
     document.body.dataset.body = body;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp`;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=14`;
     const st = $("strap");
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
@@ -914,6 +914,7 @@
     const label = app.mode === "camera" ? (app.camMode === "video" ? (app.recorder ? "stop ■" : "rec ●") : "snap ♡") : app.mode === "empty" ? "on ♡" : "save ♡";
     $("shutterLabel").textContent = label;
     $("deckShutter").textContent = label;
+    $("deckShutter").classList.toggle("video", app.mode === "camera" && app.camMode === "video");
     $("deckMode").textContent = app.camMode === "video" ? "vid" : "pic";
     $("deckFlash").classList.toggle("on", app.flash);
     $("deckTimer").classList.toggle("on", !!app.timer);
@@ -1384,6 +1385,7 @@
     const p = $("rollPeek");
     p.innerHTML = "";
     p._item = item || null;
+    $("deckRoll").style.backgroundImage = item && item.type !== "video" ? `url("${urlFor(item)}")` : "";
     if (!item) { p.innerHTML = "<span>♡</span>"; return; }
     if (item.type === "video") p.innerHTML = "<span>▶</span>";
     else { const img = document.createElement("img"); img.src = urlFor(item); img.alt = ""; p.appendChild(img); }

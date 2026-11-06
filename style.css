@@ -526,83 +526,117 @@ body.mode-camera #out { object-fit: cover; }
 .strap.jiggle { animation: jiggle 1.3s ease-out, sway 4.6s ease-in-out 1.3s infinite; }
 @media (prefers-reduced-motion: reduce) { .strap, .strap.jiggle { animation: none; } }
 
-/* ---------- other camera bodies (phones, silver compact) ---------- */
+/* ---------- phone bodies: zoomed to fill the screen, controls inside the display ---------- */
 
 .deck { display: none; }
-body:not([data-body="pink"]) .hit-pill, body:not([data-body="pink"]) .hit-dp, body:not([data-body="pink"]) .hit-func,
-body:not([data-body="pink"]) .mode-switch, body:not([data-body="pink"]) .mode-label, body:not([data-body="pink"]) .hit-power,
-body:not([data-body="pink"]) #shutterLabel { display: none; }
+body[data-body^="phone"] .hit-pill, body[data-body^="phone"] .hit-dp, body[data-body^="phone"] .hit-func,
+body[data-body^="phone"] .mode-switch, body[data-body^="phone"] .mode-label, body[data-body^="phone"] .hit-power,
+body[data-body^="phone"] #shutterLabel, body[data-body^="phone"] .title, body[data-body^="phone"] .foot,
+body[data-body^="phone"] .peek, body[data-body^="phone"] .cam::before { display: none; }
 
-body:not([data-body="pink"]) .desk { --cam-w: min(66vw, calc((100dvh - 250px) * var(--ar)), 330px); }
-body:not([data-body="pink"])[data-menu] .desk { --cam-w: min(66vw, calc((50dvh - 90px) * var(--ar)), 330px); }
-body:not([data-body="pink"]) .cam { margin-bottom: 124px; }
-body:not([data-body="pink"])[data-menu] .cam { margin-bottom: calc(44dvh + 10px); }
-body:not([data-body="pink"])[data-menu] .deck, body:not([data-body="pink"])[data-menu] .foot { display: none !important; }
-body:not([data-body="pink"]) .cam::before { display: none; }
-body:not([data-body="pink"]) .cam-art { filter: none; }
-
-body[data-body="phone4s"] .cam { aspect-ratio: 325 / 681; }
+body[data-body^="phone"] .desk { --cam-w: min(96vw, calc((100dvh - 20px) * var(--ar)), 470px); padding-top: max(6px, env(safe-area-inset-top)); }
 body[data-body="phone4s"] .desk { --ar: 0.477; }
-body[data-body="phone4s"] .screen { left: 8%; top: 15.5%; width: 84.7%; height: 67.5%; border-radius: 0; }
-body[data-body="phone4s"] .hit-shutter { left: 37%; top: 85%; width: 26%; height: 12%; border-radius: 50%; }
-
-body[data-body="phone5c"] .cam { aspect-ratio: 490 / 1011; }
 body[data-body="phone5c"] .desk { --ar: 0.485; }
-body[data-body="phone5c"] .screen { left: 9%; top: 13%; width: 82%; height: 73%; border-radius: 0; }
+body[data-body="phone4s"] .cam { aspect-ratio: 325 / 681; --sl: 8%; --st: 15.5%; --sw: 84.7%; --sh: 67.5%; }
+body[data-body="phone5c"] .cam { aspect-ratio: 490 / 1011; --sl: 9%; --st: 13%; --sw: 82%; --sh: 73%; }
+body[data-body^="phone"] .cam { --dk: 17%; --mh: 37%; }
+
+body[data-body^="phone"] .screen {
+  left: var(--sl); top: var(--st); width: var(--sw);
+  height: calc(var(--sh) - var(--dk));
+  border-radius: 0;
+}
+body[data-body^="phone"][data-menu] .screen { height: calc(var(--sh) - var(--mh)); }
+body[data-body^="phone"] .screen::after { box-shadow: none; }
+body[data-body="phone4s"] .hit-shutter { left: 37%; top: 85%; width: 26%; height: 12%; border-radius: 50%; }
 body[data-body="phone5c"] .hit-shutter { left: 38%; top: 87%; width: 24%; height: 11%; border-radius: 50%; }
+body[data-body^="phone"] .lug { left: 3%; top: 5%; }
+body[data-body^="phone"] .strap { left: 1%; top: 5.6%; height: 24%; }
 
-body[data-body="compact"] .cam { aspect-ratio: 945 / 1241; }
-body[data-body="compact"] .desk { --ar: 0.761; }
-body[data-body="compact"] .screen { left: 23.1%; top: 6.5%; width: 55.7%; height: 47.6%; border-radius: 1cqw; }
-body[data-body="compact"] .hit-shutter { left: 39%; top: 67%; width: 17%; height: 11%; border-radius: 50%; }
-body[data-body="compact"] .lug { left: 1%; top: 3%; }
-body[data-body="compact"] .strap { left: -3.6%; top: 3.8%; }
-
-body:not([data-body="pink"]) .deck {
+/* camera-app controls, drawn in the bottom of the phone's display */
+body[data-body^="phone"] .deck {
   position: absolute;
-  top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(94vw, 420px);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 7px 6px;
+  left: var(--sl); width: var(--sw);
+  top: calc(var(--st) + var(--sh) - var(--dk)); height: var(--dk);
+  display: flex; flex-direction: column; justify-content: space-evenly;
+  background: #161415;
   z-index: 6;
+  font-family: var(--pix);
 }
+body[data-body^="phone"][data-menu] .deck { display: none; }
+.deck-row { display: flex; align-items: center; justify-content: space-around; gap: 2px; padding: 0 4px; }
 .deck button {
-  font-family: var(--title);
-  font-size: 15px;
+  font-family: var(--pix);
+  font-size: clamp(12px, 4.2cqw, 16px);
   line-height: 1;
-  color: var(--graphite);
-  background: var(--lilac);
-  border: 0;
-  border-radius: 999px;
-  padding: 7px 11px 6px;
-  box-shadow: 0 0 0 2.5px #fff, 1px 3px 5px rgba(60, 40, 40, 0.22);
-}
-.deck button:nth-child(odd) { transform: rotate(-2deg); }
-.deck button:nth-child(even) { transform: rotate(2deg); }
-.deck button.on { background: var(--graphite); color: var(--lilac); }
-.deck button:active { filter: brightness(0.92); }
-.deck .d-shutter {
-  flex-basis: 70%;
-  font-size: 21px;
-  padding: 10px 0 9px;
   color: var(--lilac);
-  background: var(--graphite);
-  transform: rotate(-1deg) !important;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  padding: 5px 5px 4px;
+  min-width: 0;
 }
-body:not([data-body="pink"]) .menu {
-  top: calc(100% + 8px);
-  bottom: auto;
-  left: 50%;
-  right: auto;
-  width: min(94vw, 440px);
-  height: 44dvh;
-  border-radius: 16px;
-  transform: translateX(-50%);
+.deck button.on { color: #161415; background: var(--lilac); }
+.deck button:active { background: rgba(232, 204, 216, 0.25); }
+.deck .d-side {
+  width: 15cqw; height: 15cqw;
+  border-radius: 8px;
+  border: 1.5px solid rgba(232, 204, 216, 0.6);
+  overflow: hidden; padding: 0;
+  background: #2a2628 center / cover no-repeat;
+}
+.deck .d-shutter {
+  width: 19cqw; height: 19cqw;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--graphite);
+  font-family: var(--title);
+  font-size: clamp(11px, 3.4cqw, 14px);
+  box-shadow: 0 0 0 3px #161415, 0 0 0 5.5px #fff;
+  padding: 0;
+}
+.deck .d-shutter.video { background: #e0405a; color: #fff; }
+.deck .d-shutter:active { transform: scale(0.94); background: #eee; }
+
+/* the edit menu fills the lower part of the display; the photo stays on top */
+body[data-body^="phone"] .menu {
+  left: var(--sl); right: auto; width: var(--sw);
+  top: calc(var(--st) + var(--sh) - var(--mh)); bottom: auto; height: var(--mh);
+  border-radius: 0;
+  box-shadow: none;
+  border-top: 1px solid rgba(232, 204, 216, 0.3);
+  background: #161415;
   animation: none;
 }
-body[data-body="compact"] .desk { --cam-w: min(80vw, calc((100dvh - 250px) * 0.761), 380px); }
-body[data-body="compact"][data-menu] .desk { --cam-w: min(80vw, calc((50dvh - 90px) * 0.761), 380px); }
+
+/* ---------- silver compact: zoomed, painted buttons are live ---------- */
+
+body[data-body="compact"] .cam { aspect-ratio: 397 / 707; }
+body[data-body="compact"] .desk { --cam-w: min(94vw, calc((100dvh - 110px) * 0.562), 460px); }
+body[data-body="compact"] .cam::before { display: none; }
+body[data-body="compact"] .hit-power, body[data-body="compact"] .peek { display: none; }
+body[data-body="compact"] .screen { left: 8.9%; top: 6.5%; width: 78.6%; height: 49.5%; border-radius: 1cqw; }
+body[data-body="compact"] .lug { left: 1%; top: 2.6%; }
+body[data-body="compact"] .strap { left: -5.6%; top: 3.4%; height: 36%; }
+body[data-body="compact"] .hit-func { left: 5.9%; top: 60.0%; width: 19.7%; height: 8.3%; }
+body[data-body="compact"] .hit-pill { width: 19.7%; height: 8.3%; border-radius: 50%; }
+body[data-body="compact"] .p1 { left: 5.9%; top: 69.4%; }
+body[data-body="compact"] .p3 { left: 59.5%; top: 60.0%; }
+body[data-body="compact"] .p2 { left: 18.6%; top: 89.1%; width: 48.0%; height: 7.3%; border-radius: 20px; }
+body[data-body="compact"] .hit-shutter { left: 33.5%; top: 72.2%; width: 16.9%; height: 8.3%; border-radius: 50%; }
+body[data-body="compact"] .dp-up { left: 34.7%; top: 65.2%; width: 14.1%; height: 6.2%; }
+body[data-body="compact"] .dp-down { left: 34.7%; top: 81.3%; width: 14.1%; height: 6.2%; }
+body[data-body="compact"] .dp-left { left: 21.5%; top: 72.5%; width: 11.3%; height: 7.7%; }
+body[data-body="compact"] .dp-right { left: 51.1%; top: 72.5%; width: 11.3%; height: 7.7%; }
+body[data-body="compact"] .mode-switch { left: 77.9%; top: 67.3%; width: 18.3%; height: 23.9%; }
+body[data-body="compact"] .mode-label { left: 77.9%; top: 91.7%; width: 18.3%; }
+body[data-body="compact"] #shutterLabel { display: none; }
+/* small labels under the painted buttons */
+body[data-body="compact"] .hit-pill span, body[data-body="compact"] .hit-func span {
+  position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.4cqw; color: var(--graphite); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+body[data-body="compact"] .p2 span { position: static; transform: none; }
+body[data-body="compact"] .menu { top: 56%; bottom: 2%; left: 4%; right: 4%; }
