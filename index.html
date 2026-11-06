@@ -16,10 +16,10 @@
   <link rel="preload" as="image" href="img/camera-blank.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Gochi+Hand&family=Great+Vibes&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
-<body class="mode-empty">
+<body class="mode-empty" data-body="pink">
   <div class="desk">
     <!-- scattered painted stickers -->
     <img class="deco d-bow" src="img/bow.webp" alt="" aria-hidden="true">
@@ -36,8 +36,9 @@
     </header>
 
     <main class="cam" id="cam">
-      <img class="cam-art" src="img/camera-blank.webp" alt="" aria-hidden="true">
-      <img class="strap" src="img/strap.webp" alt="" aria-hidden="true">
+      <img class="cam-art" id="camArt" src="img/camera-blank.webp" alt="" aria-hidden="true">
+      <i class="lug" aria-hidden="true"></i>
+      <img class="strap" id="strap" src="img/strap.webp" alt="" aria-hidden="true">
 
       <button id="powerBtn" class="hit hit-power" type="button" aria-label="Power camera on or off"><i class="led"></i></button>
 
@@ -163,6 +164,20 @@
       <!-- painted shutter bar -->
       <button id="shutter" class="hit hit-shutter" type="button" aria-label="Turn camera on"><span id="shutterLabel">on ♡</span></button>
 
+      <!-- sticker controls for the phone and compact bodies -->
+      <nav class="deck" id="deck" aria-label="Camera controls">
+        <button type="button" data-for="rollBtn">roll</button>
+        <button type="button" data-for="fileInput">open</button>
+        <button type="button" data-for="dpLeft" aria-label="Previous look">◀</button>
+        <button type="button" data-for="funcBtn">menu</button>
+        <button type="button" data-for="dpRight" aria-label="Next look">▶</button>
+        <button type="button" data-for="dpUp" id="deckFlash">flash</button>
+        <button type="button" data-for="dpDown" id="deckTimer">timer</button>
+        <button type="button" data-for="mode" id="deckMode">pic</button>
+        <button type="button" data-for="flipBtn">flip</button>
+        <button type="button" data-for="shutter" class="d-shutter" id="deckShutter">on ♡</button>
+      </nav>
+
       <!-- last shot, taped on -->
       <button id="rollPeek" class="peek" type="button" aria-label="Last photo"><span>♡</span></button>
     </main>
@@ -202,7 +217,7 @@
   <div id="toast" class="toast" hidden></div>
 
   <video id="video" playsinline muted hidden></video>
-  <script src="filters.js?v=12"></script>
-  <script src="script.js?v=12"></script>
+  <script src="filters.js?v=13"></script>
+  <script src="script.js?v=13"></script>
 </body>
 </html>

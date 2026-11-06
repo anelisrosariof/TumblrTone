@@ -887,6 +887,18 @@
     document.querySelectorAll(".fthumb").forEach((b) => b.classList.toggle("active", b.dataset.id === S.filterId));
     $("filterBlurb").textContent = byId[S.filterId].blurb;
     $("hudLook").textContent = byId[S.filterId].name;
+    paintBody();
+  }
+
+  // each camera look can bring its own painted body
+  const BODY_FOR = { "4s": "phone4s", "5c": "phone5c", ix: "compact", fj: "compact", kh: "compact" };
+  function paintBody() {
+    const body = BODY_FOR[S.filterId] || "pink";
+    if (document.body.dataset.body === body) return;
+    document.body.dataset.body = body;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp`;
+    const st = $("strap");
+    st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
 
   function paintHud() {
@@ -901,6 +913,10 @@
     $("dpDown").classList.toggle("on", !!app.timer);
     const label = app.mode === "camera" ? (app.camMode === "video" ? (app.recorder ? "stop ■" : "rec ●") : "snap ♡") : app.mode === "empty" ? "on ♡" : "save ♡";
     $("shutterLabel").textContent = label;
+    $("deckShutter").textContent = label;
+    $("deckMode").textContent = app.camMode === "video" ? "vid" : "pic";
+    $("deckFlash").classList.toggle("on", app.flash);
+    $("deckTimer").classList.toggle("on", !!app.timer);
     $("shutter").classList.toggle("video", app.mode === "camera" && app.camMode === "video");
     $("shutter").setAttribute("aria-label", app.mode === "camera" ? (app.camMode === "video" ? "Start or stop recording" : "Take photo") : app.mode === "empty" ? "Turn camera on" : "Save");
   }
@@ -1434,12 +1450,13 @@
 
   function openMenu() {
     $("menu").hidden = false;
+    document.body.dataset.menu = "1";
     $("funcBtn").classList.add("on");
     renderThumbs();
     const a = document.querySelector(".fthumb.active");
     if (a) a.scrollIntoView({ inline: "center", block: "nearest" });
   }
-  function closeMenu() { $("menu").hidden = true; $("funcBtn").classList.remove("on"); }
+  function closeMenu() { $("menu").hidden = true; delete document.body.dataset.menu; $("funcBtn").classList.remove("on"); }
 
   function powerOn() { if (app.mode !== "camera") startCamera(); }
   function powerOff() {
@@ -1478,6 +1495,12 @@
       if (it) openViewer(it); else openRoll();
     });
     $("rollBtn").addEventListener("click", openRoll);
+    $("deck").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-for]");
+      if (!b) return;
+      if (b.dataset.for === "mode") { const m = document.querySelector(".mode:not(.active)"); if (m) m.click(); return; }
+      $(b.dataset.for).click();
+    });
     $("rollClose").addEventListener("click", closeRoll);
     $("roll").addEventListener("click", (e) => { if (e.target === $("roll")) closeRoll(); });
 
