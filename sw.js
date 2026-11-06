@@ -1,5 +1,5 @@
 /* Tumblr Tone service worker: network first, cache fallback so the darkroom opens offline. */
-const CACHE = "tumblrtone-v11";
+const CACHE = "tumblrtone-v12";
 const FILES = ["./", "index.html", "style.css?v=7", "filters.js?v=7", "script.js?v=7", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {

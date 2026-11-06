@@ -235,6 +235,72 @@
       con: 0.4, fx: { grain: 0.55, dust: 0.4, sharp: 0.4 } })
   ];
 
+
+  // ---------- the roll, retuned against Bleach Bypass screenshots ----------
+  const roll = (id, o) => {
+    const i = FILTERS.findIndex((f) => f.id === id);
+    const prev = i >= 0 ? FILTERS[i] : {};
+    const f = P(Object.assign({ id, name: prev.name, group: "roll", blurb: prev.blurb }, o));
+    if (i >= 0) FILTERS[i] = f; else FILTERS.push(f);
+  };
+  roll("nashville", { blurb: "Milky lifted blacks, peach highlights, teal in the shadows.",
+    r: [38, 92, 152, 212, 250], g: [30, 80, 138, 198, 240], b: [52, 96, 140, 190, 228],
+    sat: -0.05, con: -0.08, fade: 0.15, hi: [0.04, 0, -0.02], sh: [-0.03, 0, 0.04],
+    fx: { vig: 0.45, old: 0.4 } });
+  roll("kiev", { name: "Keef", blurb: "Punchy and warm: burnt-orange walls, cool blue clothes, deep shadows.",
+    r: [6, 62, 140, 218, 255], g: [2, 50, 122, 198, 250], b: [0, 40, 108, 184, 240],
+    sat: 0.25, con: 0.22, temp: 0.1, sh: [0, -0.01, 0.02],
+    fx: { vig: 0.5, old: 0.35 } });
+  roll("2014", { blurb: "Saturated warm pink, the 2014 Tumblr selfie.",
+    r: [14, 74, 148, 220, 255], g: [6, 58, 126, 200, 250], b: [12, 58, 122, 194, 246],
+    sat: 0.18, con: 0.12, tint: -0.15,
+    fx: { vig: 0.45, old: 0.4, glow: 0.1 } });
+  roll("amaro", { blurb: "Bright and lifted with a magenta wash.",
+    r: [30, 92, 160, 220, 255], g: [20, 78, 142, 206, 250], b: [44, 100, 160, 220, 255],
+    con: -0.05, bri: 0.04, tint: -0.3, fade: 0.12,
+    fx: { vig: 0.4, old: 0.35 } });
+  roll("nuke", { blurb: "Blown-out orange and gold, like the flash went off twice.",
+    r: [40, 120, 200, 245, 255], g: [18, 84, 160, 220, 250], b: [0, 40, 100, 160, 210],
+    sat: 0.2, con: -0.05, bri: 0.06, temp: 0.25,
+    fx: { vig: 0.18, glow: 0.4, hal: 0.15, old: 0.4 } });
+  roll("cash", { blurb: "Muted olive: yellow-green highlights, magenta-brown shadows.",
+    r: [20, 70, 132, 196, 245], g: [14, 66, 134, 204, 250], b: [20, 58, 104, 160, 210],
+    sat: -0.25, con: 0.1, sh: [0.04, -0.02, 0.04], hi: [0, 0.03, -0.04],
+    fx: { vig: 0.5, old: 0.45 } });
+  roll("pandora", { blurb: "Drained and matte with a cool green cast.",
+    r: [22, 68, 124, 186, 236], g: [24, 72, 128, 188, 234], b: [24, 66, 116, 172, 220],
+    sat: -0.4, con: 0.05, fade: 0.15, tint: 0.1,
+    fx: { vig: 0.5, old: 0.5 } });
+  roll("fresh", { name: "Phresh", blurb: "Clean, bright and airy. Just a little nicer.",
+    r: [10, 72, 142, 214, 255], g: [10, 74, 144, 216, 255], b: [14, 78, 146, 214, 255],
+    sat: 0.1, con: 0.05, bri: 0.06, fx: { sharp: 0.15, old: 0.25 } });
+
+  // new ones
+  roll("ghost", { name: "Ghost Cam", blurb: "Shrunk to 450px and blown back up: blurry, noisy, brown. The haunted upload.",
+    r: [16, 70, 134, 196, 240], g: [12, 62, 124, 186, 232], b: [10, 54, 110, 168, 214],
+    sat: -0.35, con: -0.04, bri: 0.07, fx: { res: 0.86, old: 1, vig: 0.45 } });
+  roll("threeam", { name: "3am", blurb: "Purple webcam noise at 3am. Tiny file, big feelings.",
+    r: [22, 70, 134, 198, 244], g: [16, 62, 126, 188, 236], b: [30, 80, 142, 202, 246],
+    sat: 0.05, con: 0.12, tint: -0.08, fx: { res: 0.85, old: 1, vig: 0.45, ca: 0.2 } });
+  roll("pinkroom", { name: "Pink Room", blurb: "Soft pastel pink with lavender shadows.",
+    r: [26, 80, 148, 214, 255], g: [18, 70, 134, 200, 248], b: [30, 82, 144, 206, 250],
+    sat: -0.12, con: -0.12, tint: -0.15, fade: 0.1, fx: { vig: 0.25, old: 0.25 } });
+  roll("sugar", { name: "Sugar", blurb: "Bright, airy pastel. Cotton-candy soft.",
+    r: [34, 96, 166, 226, 255], g: [28, 88, 156, 218, 255], b: [40, 98, 162, 222, 255],
+    sat: -0.08, con: -0.15, bri: 0.04, fx: { vig: 0.1, old: 0.2, glow: 0.15 } });
+  roll("afterparty", { name: "Afterparty", blurb: "Cross-processed: purple shadows, minty highlights, crushed blacks.",
+    r: [0, 40, 118, 206, 255], g: [10, 58, 134, 214, 250], b: [40, 96, 160, 210, 240],
+    sat: 0.15, con: 0.3, sh: [0.04, -0.03, 0.08], hi: [-0.02, 0.04, 0],
+    fx: { vig: 0.5, old: 0.5 } });
+  // the Tumblr "Haunted" gets the shrink too
+  { const h = FILTERS.find((f) => f.id === "haunted"); h.fx = Object.assign({}, h.fx, { res: 0.6, old: 0.8 }); }
+
+  // Curves fitted pixel-by-pixel from Bleach Bypass screenshots of the same photo.
+  const FIT = {"nashville": {"r": [0, 63, 170, 232, 251], "g": [32, 97, 166, 204, 221], "b": [59, 106, 154, 178, 195], "sat": 0.05}, "kiev": {"r": [13, 70, 168, 244, 255], "g": [13, 60, 165, 229, 255], "b": [0, 45, 134, 226, 255], "sat": 0.08}, "2014": {"r": [30, 86, 176, 253, 255], "g": [27, 82, 162, 225, 255], "b": [30, 72, 149, 238, 255], "sat": 0.07}, "amaro": {"r": [20, 85, 178, 237, 255], "g": [22, 78, 162, 220, 248], "b": [33, 90, 169, 224, 252], "sat": 0.08}, "nuke": {"r": [66, 152, 217, 255, 255], "g": [55, 102, 166, 237, 255], "b": [84, 92, 134, 193, 233], "sat": 0.06}, "cash": {"r": [34, 85, 145, 201, 255], "g": [5, 61, 129, 190, 253], "b": [29, 70, 117, 155, 205], "sat": -0.01}, "pandora": {"r": [17, 70, 143, 224, 255], "g": [33, 89, 170, 222, 255], "b": [10, 74, 145, 202, 255], "sat": -0.01}, "sugar": {"r": [36, 95, 154, 210, 242], "g": [34, 88, 146, 199, 241], "b": [22, 82, 147, 213, 252], "sat": 0.07}, "afterparty": {"r": [1, 58, 127, 205, 232], "g": [1, 52, 163, 224, 250], "b": [64, 109, 183, 225, 255], "sat": 0.14}};
+  Object.entries(FIT).forEach(([id, c]) => {
+    const f = FILTERS.find((x) => x.id === id); if (!f) return;
+    Object.assign(f, { r: c.r, g: c.g, b: c.b, sat: c.sat, con: 0, bri: 0, temp: 0, tint: 0, fade: 0, sh: [0, 0, 0], hi: [0, 0, 0] });
+  });
   // Every roll look is a digicam look: give it the old-sensor texture too.
   FILTERS.forEach((f) => { if ((f.group === "roll") && f.fx.old == null) f.fx.old = 0.5; });
 

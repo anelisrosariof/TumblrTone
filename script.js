@@ -7,7 +7,8 @@
   const FILTERS = window.TT_FILTERS;
   const GROUPS = window.TT_GROUPS;
   const byId = Object.fromEntries(FILTERS.map((f) => [f.id, f]));
-  const ROLL_ORDER = ["nashville", "kiev", "2014", "amaro", "nuke", "cash", "pandora", "sepia", "fresh"];
+  const ROLL_ORDER = ["nashville", "kiev", "2014", "amaro", "nuke", "cash", "pandora", "sepia", "fresh",
+    "ghost", "threeam", "pinkroom", "sugar", "afterparty"];
   const groupIndex = (g) => GROUPS.findIndex((x) => x.id === g);
   const LOOKS = FILTERS.filter((f) => f.id !== "none").sort((a, b) =>
     groupIndex(a.group) - groupIndex(b.group) ||
@@ -39,6 +40,7 @@
     { key: "flash", label: "Flash pop" },
     { key: "chroma", label: "Chromatic fringe" },
     { key: "oldphone", label: "Old phone sensor" },
+    { key: "lowsize", label: "Image size (shrink)" },
     { key: "lowres", label: "Low-res digicam" },
     { key: "sharpen", label: "Crunchy sharpen" }
   ].map((d) => ({ ...d, min: 0, max: 100 }));
@@ -163,7 +165,7 @@
     uniform float pSat, pCon, pBri, pFade, pTemp, pTint, pMono;
     uniform vec3 pSh, pHi;
     uniform float aExp, aCon, aSat, aTemp, aTint, aHi, aSh, aFade;
-    uniform float eGrain, eVig, eGlow, eHal, eCA, eLeak, eDust, ePix, eSharp, eFlash, eOld;
+    uniform float eGrain, eVig, eGlow, eHal, eCA, eLeak, eDust, ePix, eSharp, eFlash, eOld, eRes;
 
     const vec3 W = vec3(0.299, 0.587, 0.114);
 
@@ -171,7 +173,19 @@
       if (uMirror > 0.5) uv.x = 1.0 - uv.x;
       return uCrop.xy + clamp(uv, 0.0, 1.0) * uCrop.zw;
     }
-    vec3 tex(vec2 uv) { return texture2D(uSrc, srcUv(uv)).rgb; }
+    vec3 tex0(vec2 uv) { return texture2D(uSrc, srcUv(uv)).rgb; }
+    // "image size": read the photo as if it were shrunk to a few hundred pixels
+    // and stretched back up (bilinear), like a re-saved 2010 upload
+    vec3 tex(vec2 uv) {
+      if (eRes <= 0.0) return tex0(uv);
+      float rows = mix(1100.0, 280.0, eRes);
+      vec2 cells = vec2(rows * uRes.x / uRes.y, rows);
+      vec2 q = uv * cells - 0.5;
+      vec2 i = floor(q), fr = fract(q);
+      vec3 a = tex0((i + vec2(0.5, 0.5)) / cells), b = tex0((i + vec2(1.5, 0.5)) / cells);
+      vec3 c = tex0((i + vec2(0.5, 1.5)) / cells), d = tex0((i + vec2(1.5, 1.5)) / cells);
+      return mix(mix(a, b, fr.x), mix(c, d, fr.x), fr.y);
+    }
     float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
     float vnoise(vec2 p) {
       vec2 i = floor(p), f = fract(p);
@@ -467,6 +481,7 @@
     gl.uniform1f(U.eSharp, mix(e.sharpen, fx.sharp));
     gl.uniform1f(U.eFlash, mix(e.flash, fx.flash));
     gl.uniform1f(U.eOld, mix(e.oldphone, fx.old));
+    gl.uniform1f(U.eRes, mix(e.lowsize, fx.res));
 
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
