@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body class="mode-empty" data-body="pink">
   <div class="desk">
@@ -89,7 +89,7 @@
           <button class="tab" data-tab="adjust" type="button">ADJ</button>
           <button class="tab" data-tab="effects" type="button">FX</button>
           <button class="tab" data-tab="extras" type="button">DATE</button>
-          <button class="tab" data-tab="setup" type="button">SET</button>
+          <button class="tab" data-tab="setup" type="button">CAM</button>
         </div>
 
         <div class="panels">
@@ -123,6 +123,8 @@
           </div>
 
           <div class="panel" id="panel-setup">
+            <p class="menu-label">DEVICE</p>
+            <div class="chips" id="deviceChips"></div>
             <p class="menu-label">PICTURE SIZE</p>
             <div class="chips" id="aspectChips"></div>
             <p class="menu-label">GRID</p>
@@ -222,7 +224,7 @@
   <div id="toast" class="toast" hidden></div>
 
   <video id="video" playsinline muted hidden></video>
-  <script src="filters.js?v=14"></script>
-  <script src="script.js?v=14"></script>
+  <script src="filters.js?v=15"></script>
+  <script src="script.js?v=15"></script>
 </body>
 </html>

@@ -872,6 +872,8 @@
       app.grid = v === "on";
       $("gridOverlay").hidden = !(app.mode === "camera" && app.grid);
     });
+    makeChips($("deviceChips"), DEVICES, () => device, setDevice);
+    paintBody();
     makeChips($("soundChips"), [{ id: "on", name: "Beep" }, { id: "off", name: "Quiet" }], () => (app.sound ? "on" : "off"), (v) => { app.sound = v === "on"; });
 
     // tabs
@@ -887,18 +889,29 @@
     document.querySelectorAll(".fthumb").forEach((b) => b.classList.toggle("active", b.dataset.id === S.filterId));
     $("filterBlurb").textContent = byId[S.filterId].blurb;
     $("hudLook").textContent = byId[S.filterId].name;
-    paintBody();
   }
 
-  // each camera look can bring its own painted body
-  const BODY_FOR = { "4s": "phone4s", "5c": "phone5c", ix: "compact", fj: "compact", kh: "compact" };
+  // the camera body is picked once in SET and saved; looks never change it
+  const DEVICES = [
+    { id: "pink", name: "Pink digicam" },
+    { id: "phone4s", name: "White phone" },
+    { id: "phone5c", name: "Lilac phone" },
+    { id: "compact", name: "Silver compact" },
+  ];
+  let device = "pink";
+  try { const d = localStorage.getItem("tt-device"); if (DEVICES.some((x) => x.id === d)) device = d; } catch (e) {}
   function paintBody() {
-    const body = BODY_FOR[S.filterId] || "pink";
+    const body = device;
     if (document.body.dataset.body === body) return;
     document.body.dataset.body = body;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=14`;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=15`;
     const st = $("strap");
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
+  }
+  function setDevice(id) {
+    device = id;
+    try { localStorage.setItem("tt-device", id); } catch (e) {}
+    paintBody();
   }
 
   function paintHud() {
