@@ -916,6 +916,7 @@
       $("gridOverlay").hidden = !(app.mode === "camera" && app.grid);
     });
     makeChips($("deviceChips"), DEVICES, () => device, setDevice);
+    makeChips($("strapChips"), STRAPS, () => strapId, setStrap); paintStrap();
     paintBody();
     makeChips($("soundChips"), [{ id: "on", name: "Beep" }, { id: "off", name: "Quiet" }], () => (app.sound ? "on" : "off"), (v) => { app.sound = v === "on"; });
 
@@ -941,16 +942,41 @@
     { id: "phone4s", name: "White phone" },
     { id: "phone5c", name: "Lilac phone" },
     { id: "compact", name: "Silver compact" },
+    { id: "sage", name: "Sage bow cam" },
+    { id: "white", name: "Milk cam" },
+    { id: "jewel", name: "Jewel cam" },
   ];
+  const DIGI = ["sage", "white", "jewel"];
+  const STRAPS = [
+    { id: "beads", name: "Beads", src: "img/strap.webp", x: 0.506 },
+    { id: "silver", name: "Silver heart", src: "img/strap-silver.webp", x: 0.515 },
+    { id: "gingham", name: "Cherry bow", src: "img/strap-gingham.webp", x: 0.513 },
+    { id: "pearl", name: "Sakura pearl", src: "img/strap-pearl.webp", x: 0.514 },
+    { id: "clover", name: "Lucky clover", src: "img/strap-clover.webp", x: 0.444 },
+    { id: "bunny", name: "Bunny", src: "img/strap-bunny.webp", x: 0.532 },
+    { id: "none", name: "None" },
+  ];
+  let strapId = "beads";
+  try { const v = localStorage.getItem("tt-strap"); if (STRAPS.some((x) => x.id === v)) strapId = v; } catch (e) {}
+  function paintStrap() {
+    const k = STRAPS.find((x) => x.id === strapId), st = $("strap");
+    st.hidden = !k.src; document.querySelector(".lug").hidden = !k.src;
+    if (!k.src) return;
+    const place = () => { st.style.marginLeft = (-(k.x - 0.5) * st.offsetWidth) + "px"; st.style.transformOrigin = (k.x * 100) + "% 1.5%"; };
+    st.onload = place;
+    if (!st.src.endsWith(k.src + "?v=18")) st.src = k.src + "?v=18"; else place();
+    st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
+  }
+  function setStrap(id) { strapId = id; try { localStorage.setItem("tt-strap", id); } catch (e) {} paintStrap(); }
   let device = "pink";
   try { const d = localStorage.getItem("tt-device"); if (DEVICES.some((x) => x.id === d)) device = d; } catch (e) {}
   function paintBody() {
     const body = device;
     if (document.body.dataset.body === body) return;
     document.body.dataset.body = body;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=15`;
-    const st = $("strap");
-    st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
+    if (DIGI.includes(body)) document.body.dataset.kind = "digi"; else delete document.body.dataset.kind;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=18`;
+    requestAnimationFrame(() => paintStrap());
   }
   // sticker panel
   let ownStickers = [];
@@ -1803,7 +1829,7 @@
     if ("serviceWorker" in navigator && location.protocol === "https:") {
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }
-    window.__tt = { app, get S() { return S; }, loadImageBlob, renderThumbs, renderPreview, stepLook, setMode, startLoop };
+    window.__tt = { app, get S() { return S; }, renderStill, loadImageBlob, renderThumbs, renderPreview, stepLook, setMode, startLoop };
   }
 
   boot();
