@@ -962,9 +962,9 @@
     const k = STRAPS.find((x) => x.id === strapId), st = $("strap");
     st.hidden = !k.src; document.querySelector(".lug").hidden = !k.src;
     if (!k.src) return;
-    const place = () => { st.style.marginLeft = (-(k.x - 0.5) * st.offsetWidth) + "px"; st.style.transformOrigin = (k.x * 100) + "% 1.5%"; };
-    st.onload = place;
-    if (!st.src.endsWith(k.src + "?v=18")) st.src = k.src + "?v=18"; else place();
+    // k.x = where the loop sits across the picture; CSS pins that point to the ring
+    st.style.setProperty("--kx", k.x);
+    if (!st.src.endsWith(k.src + "?v=19")) st.src = k.src + "?v=19";
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
   function setStrap(id) { strapId = id; try { localStorage.setItem("tt-strap", id); } catch (e) {} paintStrap(); }
@@ -975,7 +975,10 @@
     if (document.body.dataset.body === body) return;
     document.body.dataset.body = body;
     if (DIGI.includes(body)) document.body.dataset.kind = "digi"; else delete document.body.dataset.kind;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=18`;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=19`;
+    // bodies with no painted key in that spot get a drawn one
+    const keys = { compact: ["p2"], white: ["p1", "p2", "p3"] }[body] || [];
+    ["p1", "p2", "p3"].forEach((p) => document.querySelector(".hit-pill." + p).classList.toggle("key", keys.includes(p)));
     requestAnimationFrame(() => paintStrap());
   }
   // sticker panel

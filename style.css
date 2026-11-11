@@ -27,7 +27,10 @@ html, body { margin: 0; height: 100%; }
 body {
   font-family: var(--sans);
   color: var(--ink);
-  background: #ece4dc url("img/wall.webp") center / cover no-repeat;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: center top;
   overflow: hidden;
   overscroll-behavior: none;
   -webkit-user-select: none;
@@ -57,7 +60,7 @@ button:disabled { cursor: default; }
   filter: drop-shadow(1px 3px 3px rgba(80, 45, 30, 0.18));
 }
 .d-bow      { top: max(10px, env(safe-area-inset-top)); left: 3%; width: min(20vw, 92px); transform: rotate(-12deg); }
-.d-sparkle  { top: 12%; left: 30%; width: 22px; }
+.d-sparkle  { top: 3%; left: 34%; width: 22px; }
 .d-cassette { top: 34%; left: -6%; width: min(30vw, 140px); transform: rotate(-14deg); }
 .d-star     { top: 40%; right: -3%; width: min(16vw, 70px); transform: rotate(10deg); }
 .d-heart    { bottom: 6%; left: -2%; width: min(22vw, 100px); transform: rotate(-10deg); }
@@ -129,9 +132,11 @@ button:disabled { cursor: default; }
   display: block;
 }
 /* the charm strap hangs off a little ring on the corner and sways */
+.cam { --lx: 3.6%; --ly: 9%; }
 .lug {
   position: absolute;
-  left: -1.8%; top: 4.6%;
+  left: var(--lx); top: var(--ly);
+  translate: -50% -50%;
   width: 4.6%; aspect-ratio: 1;
   border: 2px solid #b8b3ad;
   border-radius: 50%;
@@ -141,10 +146,12 @@ button:disabled { cursor: default; }
 }
 .strap {
   position: absolute;
-  left: -6.4%;
-  top: 5.4%;
-  height: 42%;
-  transform-origin: 50% 1.5%;
+  left: var(--lx);
+  top: var(--ly);
+  width: auto; height: auto;
+  max-height: 36%; max-width: 19%;
+  translate: calc(var(--kx, 0.5) * -100%) -1.5%;
+  transform-origin: calc(var(--kx, 0.5) * 100%) 1.5%;
   animation: sway 4.6s ease-in-out infinite;
   pointer-events: none;
   z-index: 3;
@@ -550,8 +557,8 @@ body[data-body^="phone"][data-menu] .screen { height: calc(var(--sh) - var(--mh)
 body[data-body^="phone"] .screen::after { box-shadow: none; }
 body[data-body="phone4s"] .hit-shutter { left: 37%; top: 85%; width: 26%; height: 12%; border-radius: 50%; }
 body[data-body="phone5c"] .hit-shutter { left: 38%; top: 87%; width: 24%; height: 11%; border-radius: 50%; }
-body[data-body^="phone"] .lug { left: 3%; top: 5%; }
-body[data-body^="phone"] .strap { left: 1%; top: 5.6%; height: 24%; }
+body[data-body^="phone"] .cam { --lx: 4.5%; --ly: 6%; }
+body[data-body^="phone"] .strap { max-height: 26%; max-width: 16%; }
 
 /* camera-app controls, drawn in the bottom of the phone's display */
 body[data-body^="phone"] .deck {
@@ -611,35 +618,40 @@ body[data-body^="phone"] .menu {
 
 /* ---------- silver compact: zoomed, painted buttons are live ---------- */
 
-body[data-body="compact"] .cam { aspect-ratio: 397 / 707; }
-body[data-body="compact"] .desk { --cam-w: min(94vw, calc((100dvh - 110px) * 0.562), 460px); }
+body[data-body="compact"] .cam { aspect-ratio: 397 / 707; --lx: 2.8%; --ly: 8%; }
+body[data-body="compact"] .desk { --cam-w: min(90vw, calc((100dvh - 110px) * 0.562), 460px); }
 body[data-body="compact"] .cam::before { display: none; }
 body[data-body="compact"] .hit-power, body[data-body="compact"] .peek { display: none; }
 body[data-body="compact"] .screen { left: 8.9%; top: 6.5%; width: 78.6%; height: 49.5%; border-radius: 1cqw; }
-body[data-body="compact"] .lug { left: 1%; top: 2.6%; }
-body[data-body="compact"] .strap { left: -5.6%; top: 3.4%; height: 36%; }
-body[data-body="compact"] .hit-func { left: 5.9%; top: 60.0%; width: 19.7%; height: 8.3%; }
-body[data-body="compact"] .hit-pill { width: 19.7%; height: 8.3%; border-radius: 50%; }
-body[data-body="compact"] .p1 { left: 5.9%; top: 69.4%; }
-body[data-body="compact"] .p3 { left: 59.5%; top: 60.0%; }
-body[data-body="compact"] .p2 { left: 18.6%; top: 89.1%; width: 48.0%; height: 7.3%; border-radius: 20px; }
-body[data-body="compact"] .hit-shutter { left: 33.5%; top: 72.2%; width: 16.9%; height: 8.3%; border-radius: 50%; }
-body[data-body="compact"] .dp-up { left: 34.7%; top: 65.2%; width: 14.1%; height: 6.2%; }
-body[data-body="compact"] .dp-down { left: 34.7%; top: 81.3%; width: 14.1%; height: 6.2%; }
-body[data-body="compact"] .dp-left { left: 21.5%; top: 72.5%; width: 11.3%; height: 7.7%; }
-body[data-body="compact"] .dp-right { left: 51.1%; top: 72.5%; width: 11.3%; height: 7.7%; }
-body[data-body="compact"] .mode-switch { left: 77.9%; top: 67.3%; width: 18.3%; height: 23.9%; }
-body[data-body="compact"] .mode-label { left: 77.9%; top: 91.7%; width: 18.3%; }
+body[data-body="compact"] .hit-func { left: 11%; top: 61.3%; width: 13%; height: 7.3%; }
+body[data-body="compact"] .hit-pill { width: 13%; height: 7.3%; border-radius: 50%; }
+body[data-body="compact"] .p1 { left: 8.8%; top: 72.6%; width: 12.4%; height: 7%; }
+body[data-body="compact"] .p3 { left: 63.5%; top: 60.7%; }
+body[data-body="compact"] .p2 { left: 14%; top: 89.6%; width: 26%; height: 5.4%; border-radius: 20px; }
+body[data-body="compact"] .hit-shutter { left: 35.5%; top: 71.8%; width: 15%; height: 8.4%; border-radius: 50%; }
+body[data-body="compact"] .dp-up { left: 36%; top: 65.5%; width: 14%; height: 6%; }
+body[data-body="compact"] .dp-down { left: 36%; top: 80.5%; width: 14%; height: 6%; }
+body[data-body="compact"] .dp-left { left: 24.5%; top: 72%; width: 10.5%; height: 8%; }
+body[data-body="compact"] .dp-right { left: 51%; top: 72%; width: 10.5%; height: 8%; }
+body[data-body="compact"] .mode-switch { left: 76.5%; top: 68.5%; width: 16%; height: 22.5%; }
+body[data-body="compact"] .mode-label { left: 76.5%; top: 92%; width: 16%; }
 body[data-body="compact"] #shutterLabel { display: none; }
 /* small labels under the painted buttons */
 body[data-body="compact"] .hit-pill span, body[data-body="compact"] .hit-func span {
   position: absolute; top: 100%; left: 50%;
   transform: translateX(-50%);
-  font-size: 3.4cqw; color: var(--graphite); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-  white-space: nowrap;
+  font-size: 3.5cqw; font-weight: 600; letter-spacing: 0.2px; color: #43322d; white-space: nowrap;
+  text-shadow: 0 0 2px #fffaf2, 0 0 2px #fffaf2, 0 0 4px #fffaf2, 0 1px 0 #fffaf2;
 }
-body[data-body="compact"] .p2 span { position: static; transform: none; }
+body[data-body="compact"] .p2 span { position: static; transform: none; text-shadow: none; }
+body[data-body="compact"] .p3 span { top: 50%; left: 100%; transform: translate(12%, -50%); }
 body[data-body="compact"] .menu { top: 56%; bottom: 2%; left: 4%; right: 4%; }
+
+.hit.key {
+  background: linear-gradient(#f4f1ec, #d9d5cf);
+  box-shadow: 0 0 0 1px rgba(90, 84, 80, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 2px rgba(60, 40, 30, 0.25);
+}
+.hit.key:active { background: #cfcac3; }
 
 /* ---------- stickers tab ---------- */
 .sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 6px; margin-bottom: 8px; }
@@ -655,42 +667,45 @@ body[data-body="compact"] .menu { top: 56%; bottom: 2%; left: 4%; right: 4%; }
 /* ---------- painted digicams (sage, white, jewel): zoomed, painted buttons are live ---------- */
 body[data-kind="digi"] .cam::before, body[data-kind="digi"] .hit-power, body[data-kind="digi"] .peek,
 body[data-kind="digi"] #shutterLabel { display: none; }
-body[data-kind="digi"] .desk { --cam-w: min(94vw, calc((100dvh - 110px) * var(--ar)), 460px); }
+body[data-kind="digi"] .desk { --cam-w: min(90vw, calc((100dvh - 110px) * var(--ar)), 460px); }
 body[data-kind="digi"] .screen { left: var(--sl); top: var(--st); width: var(--sw); height: var(--sh); border-radius: 1.2cqw; }
-body[data-kind="digi"] .lug { left: 1.2%; top: 2.4%; }
-body[data-kind="digi"] .strap { left: -6%; top: 3.2%; height: 36%; }
 body[data-kind="digi"] .menu { top: 58%; bottom: 2%; left: 4%; right: 4%; }
 body[data-kind="digi"] .hit-pill span, body[data-kind="digi"] .hit-func span {
   position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  font-size: 3.4cqw; color: var(--graphite); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8); white-space: nowrap;
+  font-size: 3.5cqw; font-weight: 600; letter-spacing: 0.2px; color: #43322d; white-space: nowrap;
+  text-shadow: 0 0 2px #fffaf2, 0 0 2px #fffaf2, 0 0 4px #fffaf2, 0 1px 0 #fffaf2;
 }
 body[data-kind="digi"] .hit-pill, body[data-kind="digi"] .hit-func { border-radius: 40px; }
 body[data-kind="digi"] .hit-shutter { border-radius: 50%; }
-body[data-kind="digi"] .mode-label { font-size: 3.4cqw; }
+body[data-kind="digi"] .mode-label, body[data-body="compact"] .mode-label {
+  font-size: 3.5cqw; font-weight: 600; letter-spacing: 0.2px; color: #43322d; white-space: nowrap;
+  text-shadow: 0 0 2px #fffaf2, 0 0 2px #fffaf2, 0 0 4px #fffaf2, 0 1px 0 #fffaf2;
+  transform: none;
+}
 
 body[data-body="sage"] .desk { --ar: 0.6696; }
-body[data-body="sage"] .cam { aspect-ratio: 460 / 687; --sl: 8.1%; --st: 12.5%; --sw: 79.4%; --sh: 45.4%; }
-body[data-body="sage"] .hit-func { left: 11%; top: 65%; width: 13%; height: 5.4%; }
-body[data-body="sage"] .p1 { left: 11%; top: 72.2%; width: 13%; height: 5.4%; }
-body[data-body="sage"] .p2 { left: 11%; top: 79.4%; width: 13%; height: 5.4%; }
-body[data-body="sage"] .hit-func span, body[data-body="sage"] .p1 span, body[data-body="sage"] .p2 span { top: 50%; transform: translate(-50%, -50%); font-size: 3cqw; text-shadow: none; }
-body[data-body="sage"] .p3 { left: 40%; top: 89%; width: 16%; height: 7%; }
-body[data-body="sage"] .p3 span { top: 50%; left: auto; right: -8%; transform: translate(100%, -50%); }
-body[data-body="sage"] .dp-up { left: 40%; top: 63.5%; width: 15%; height: 6.5%; }
-body[data-body="sage"] .dp-down { left: 40%; top: 80.5%; width: 15%; height: 6.5%; }
-body[data-body="sage"] .dp-left { left: 30%; top: 70.5%; width: 10.5%; height: 9%; }
-body[data-body="sage"] .dp-right { left: 54.5%; top: 70.5%; width: 10.5%; height: 9%; }
-body[data-body="sage"] .hit-shutter { left: 41%; top: 71%; width: 13%; height: 8%; }
-body[data-body="sage"] .mode-switch { left: 74.5%; top: 66.5%; width: 11.5%; height: 19%; }
-body[data-body="sage"] .mode-label { left: 74.5%; top: 86.5%; width: 11.5%; }
+body[data-body="sage"] .cam { aspect-ratio: 460 / 687; --sl: 8.1%; --st: 12.5%; --sw: 79.4%; --sh: 45.4%; --lx: 3%; --ly: 12.5%; }
+body[data-body="sage"] .hit-func { left: 11.5%; top: 65.6%; width: 13%; height: 4.9%; }
+body[data-body="sage"] .p1 { left: 11.5%; top: 73.6%; width: 13%; height: 4.9%; }
+body[data-body="sage"] .p2 { left: 11.5%; top: 81.7%; width: 13%; height: 4.9%; }
+body[data-body="sage"] .hit-func span, body[data-body="sage"] .p1 span, body[data-body="sage"] .p2 span { top: 50%; transform: translate(-50%, -50%); font-size: 3.2cqw; text-shadow: none; }
+body[data-body="sage"] .p3 { left: 41.3%; top: 88.6%; width: 13%; height: 8.6%; border-radius: 50%; }
+body[data-body="sage"] .p3 span { top: auto; bottom: 96%; }
+body[data-body="sage"] .dp-up { left: 40.8%; top: 64%; width: 14%; height: 6%; }
+body[data-body="sage"] .dp-down { left: 40.8%; top: 80.3%; width: 14%; height: 6%; }
+body[data-body="sage"] .dp-left { left: 30.5%; top: 70.5%; width: 10%; height: 9%; }
+body[data-body="sage"] .dp-right { left: 55%; top: 70.5%; width: 10%; height: 9%; }
+body[data-body="sage"] .hit-shutter { left: 40.8%; top: 70.3%; width: 14%; height: 9.4%; }
+body[data-body="sage"] .mode-switch { left: 74.5%; top: 67%; width: 11%; height: 18.3%; }
+body[data-body="sage"] .mode-label { left: 74.5%; top: 86.4%; width: 11%; }
 
 body[data-body="white"] .desk { --ar: 0.6216; }
-body[data-body="white"] .cam { aspect-ratio: 460 / 740; --sl: 10.4%; --st: 6.5%; --sw: 79.2%; --sh: 47.4%; }
-body[data-body="white"] .hit-func { left: 9%; top: 64%; width: 16%; height: 9.5%; border-radius: 50%; }
-body[data-body="white"] .p1 { left: 7%; top: 89%; width: 24%; height: 5.5%; }
-body[data-body="white"] .p2 { left: 38%; top: 89%; width: 24%; height: 5.5%; }
-body[data-body="white"] .p3 { left: 69%; top: 89%; width: 24%; height: 5.5%; }
-body[data-body="white"] .p1 span, body[data-body="white"] .p2 span, body[data-body="white"] .p3 span { top: 50%; transform: translate(-50%, -50%); font-size: 3.6cqw; }
+body[data-body="white"] .cam { aspect-ratio: 460 / 740; --sl: 10.4%; --st: 6.5%; --sw: 79.2%; --sh: 47.4%; --lx: 3.2%; --ly: 10%; }
+body[data-body="white"] .hit-func { left: 9.2%; top: 63.6%; width: 15.6%; height: 9.7%; border-radius: 50%; }
+body[data-body="white"] .p1 { left: 14%; top: 91.2%; width: 22%; height: 4.6%; }
+body[data-body="white"] .p2 { left: 39%; top: 91.2%; width: 22%; height: 4.6%; }
+body[data-body="white"] .p3 { left: 64%; top: 91.2%; width: 22%; height: 4.6%; }
+body[data-body="white"] .p1 span, body[data-body="white"] .p2 span, body[data-body="white"] .p3 span { top: 50%; transform: translate(-50%, -50%); font-size: 3.5cqw; text-shadow: none; }
 body[data-body="white"] .dp-up { left: 40%; top: 61.5%; width: 20%; height: 6.5%; }
 body[data-body="white"] .dp-down { left: 40%; top: 80%; width: 20%; height: 6.5%; }
 body[data-body="white"] .dp-left { left: 30%; top: 68%; width: 11%; height: 11.5%; }
@@ -700,18 +715,18 @@ body[data-body="white"] .mode-switch { left: 77%; top: 64%; width: 11%; height: 
 body[data-body="white"] .mode-label { left: 77%; top: 83.5%; width: 11%; }
 
 body[data-body="jewel"] .desk { --ar: 0.638; }
-body[data-body="jewel"] .cam { aspect-ratio: 460 / 721; --sl: 10.1%; --st: 8.8%; --sw: 79.4%; --sh: 48.9%; }
-body[data-body="jewel"] .hit-func { left: 56%; top: 68.5%; width: 11%; height: 5.5%; }
-body[data-body="jewel"] .p1 { left: 68.5%; top: 68.5%; width: 11%; height: 5.5%; }
-body[data-body="jewel"] .p2 { left: 81%; top: 68.5%; width: 11%; height: 5.5%; }
-body[data-body="jewel"] .p3 { left: 8%; top: 80%; width: 14%; height: 9%; border-radius: 50%; }
-body[data-body="jewel"] .dp-up { left: 28%; top: 62%; width: 14%; height: 6.5%; }
-body[data-body="jewel"] .dp-down { left: 28%; top: 78%; width: 14%; height: 6.5%; }
-body[data-body="jewel"] .dp-left { left: 19%; top: 68%; width: 10.5%; height: 9%; }
-body[data-body="jewel"] .dp-right { left: 41.5%; top: 68%; width: 10.5%; height: 9%; }
-body[data-body="jewel"] .hit-shutter { left: 29.5%; top: 68.5%; width: 12%; height: 8.5%; }
-body[data-body="jewel"] .mode-switch { left: 57%; top: 79.3%; width: 31%; height: 7.5%; }
+body[data-body="jewel"] .cam { aspect-ratio: 460 / 721; --sl: 10.1%; --st: 8.8%; --sw: 79.4%; --sh: 48.9%; --lx: 2.7%; --ly: 8%; }
+body[data-body="jewel"] .hit-func { left: 56.5%; top: 69%; width: 11%; height: 4.6%; }
+body[data-body="jewel"] .p1 { left: 69%; top: 69%; width: 11%; height: 4.6%; }
+body[data-body="jewel"] .p2 { left: 81.5%; top: 69%; width: 11%; height: 4.6%; }
+body[data-body="jewel"] .p3 { left: 10%; top: 84.4%; width: 12%; height: 8%; border-radius: 50%; }
+body[data-body="jewel"] .dp-up { left: 29%; top: 62.5%; width: 13%; height: 6%; }
+body[data-body="jewel"] .dp-down { left: 29%; top: 78%; width: 13%; height: 6%; }
+body[data-body="jewel"] .dp-left { left: 18.5%; top: 68.6%; width: 10%; height: 9%; }
+body[data-body="jewel"] .dp-right { left: 43%; top: 68.6%; width: 10%; height: 9%; }
+body[data-body="jewel"] .hit-shutter { left: 29%; top: 69%; width: 13%; height: 8.3%; }
+body[data-body="jewel"] .mode-switch { left: 58%; top: 81.5%; width: 30%; height: 6.6%; }
 body[data-body="jewel"] .mode-switch .mode { top: 0; bottom: auto; width: 50%; height: 100%; }
 body[data-body="jewel"] .mode-switch .mode[data-mode="video"] { left: 50%; }
 body[data-body="jewel"] .mode-switch .mode.active::after { right: auto; left: 50%; top: 112%; margin: 0 0 0 -3.5px; }
-body[data-body="jewel"] .mode-label { left: 57%; top: 88%; width: 31%; }
+body[data-body="jewel"] .mode-label { left: 58%; top: 89%; width: 30%; }
