@@ -1,6 +1,6 @@
 /* Tumblr Tone service worker: network first, cache fallback so the darkroom opens offline. */
-const CACHE = "tumblrtone-v24";
-const FILES = ["./", "index.html", "style.css?v=24", "filters.js?v=24", "script.js?v=24", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const CACHE = "tumblrtone-v25";
+const FILES = ["./", "index.html", "style.css?v=25", "filters.js?v=25", "script.js?v=25", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
