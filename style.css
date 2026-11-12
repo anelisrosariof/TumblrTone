@@ -1016,3 +1016,13 @@ body[data-body="slider"] .mode-switch .mode { height: 47%; border-radius: 12px; 
 body[data-body="slider"] .mode-label { left: 51%; top: 81.3%; width: 17.8%; }
 body[data-body="slider"] .hit-func span, body[data-body="slider"] .p1 span, body[data-body="slider"] .p2 span, body[data-body="slider"] .p3 span { top: 50%; transform: translate(-50%, -50%); font-size: 3.4cqw; }
 body[data-body="slider"] .menu { top: 49%; }
+
+/* keep the device itself centred when a drawn charm sticks out to one side */
+body[data-body="moss"] .cam { translate: 0.9% 0; }
+body[data-body="checker"] .cam { translate: 0.9% 0; }
+body[data-body="instant"] .cam { translate: 2.8% 0; }
+body[data-body="camcorder"] .cam { translate: 5.3% 0; }
+body[data-body="flip"] .cam { translate: -11.7% 0; }
+body[data-body="aqua"] .cam { translate: -7.1% 0; }
+body[data-body="slider"] .cam { translate: 9.4% 0; }
+body[data-body="cobalt"] .cam { translate: 1.2% 0; }
