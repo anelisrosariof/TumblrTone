@@ -1013,7 +1013,7 @@
     if (!k.src) return;
     // k.x = where the loop sits across the picture; CSS pins that point to the ring
     st.style.setProperty("--kx", k.x);
-    if (!st.src.endsWith(k.src + "?v=23")) st.src = k.src + "?v=23";
+    if (!st.src.endsWith(k.src + "?v=24")) st.src = k.src + "?v=24";
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
   function setStrap(id) { strapId = id; try { localStorage.setItem("tt-strap", id); } catch (e) {} paintStrap(); }
@@ -1026,7 +1026,7 @@
     if (DIGI.includes(body)) document.body.dataset.kind = "digi"; else if (DECK.includes(body)) document.body.dataset.kind = "deck"; else delete document.body.dataset.kind;
     if (V2.includes(body)) document.body.dataset.cams = "v2"; else delete document.body.dataset.cams;
     if (NOSTRAP.includes(body)) document.body.dataset.nostrap = ""; else delete document.body.dataset.nostrap;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=23`;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=24`;
     // bodies with no painted key in that spot get a drawn one
     const keys = { compact: ["p2"], white: ["p1", "p2", "p3"] }[body] || [];
     ["p1", "p2", "p3"].forEach((p) => document.querySelector(".hit-pill." + p).classList.toggle("key", keys.includes(p)));
@@ -1073,7 +1073,7 @@
   }
 
   // ---- corner sheets: camera body + keychain, and the page background
-  const thumbOf = (id) => id === "pink" ? "img/camera-blank.webp" : `img/body-${id}.webp?v=23`;
+  const thumbOf = (id) => id === "pink" ? "img/camera-blank.webp" : `img/body-${id}.webp?v=24`;
   function paintDeviceGrid() {
     const g = $("deviceGrid"); g.innerHTML = "";
     DEVICES.forEach((d) => {
