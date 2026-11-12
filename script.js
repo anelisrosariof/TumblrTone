@@ -952,8 +952,23 @@
     { id: "denim", name: "Denim cam" },
     { id: "sakura", name: "Sakura cam" },
     { id: "icephone", name: "Ice phone" },
+    { id: "wine", name: "Wine star cam" },
+    { id: "floral", name: "Cream floral cam" },
+    { id: "moss", name: "Moss cam" },
+    { id: "checker", name: "Checker cam" },
+    { id: "gingham", name: "Picnic cam" },
+    { id: "lemon", name: "Lemon cam" },
+    { id: "bubblegum", name: "Rhinestone cam" },
+    { id: "instant", name: "Mint instant" },
+    { id: "camcorder", name: "Tangerine camcorder" },
+    { id: "grape", name: "Grape toy cam" },
+    { id: "flip", name: "Lilac flip phone" },
+    { id: "aqua", name: "Aqua clear phone" },
+    { id: "slider", name: "Flame slider phone" },
   ];
-  const V2 = ["chocolate", "cobalt", "moonlight", "babyblue", "denim", "sakura", "icephone"];
+  const V2 = ["chocolate", "cobalt", "moonlight", "babyblue", "denim", "sakura", "icephone",
+    "wine", "floral", "moss", "checker", "gingham", "lemon", "bubblegum", "instant", "camcorder", "grape", "flip", "aqua", "slider"];
+  const NOSTRAP = ["flip", "aqua", "slider", "camcorder"]; // these are drawn with their own charm
   const DIGI = ["sage", "white", "jewel", ...V2];
   const STRAPS = [
     { id: "beads", name: "Beads", src: "img/strap.webp", x: 0.506 },
@@ -972,7 +987,7 @@
     if (!k.src) return;
     // k.x = where the loop sits across the picture; CSS pins that point to the ring
     st.style.setProperty("--kx", k.x);
-    if (!st.src.endsWith(k.src + "?v=20")) st.src = k.src + "?v=20";
+    if (!st.src.endsWith(k.src + "?v=21")) st.src = k.src + "?v=21";
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
   function setStrap(id) { strapId = id; try { localStorage.setItem("tt-strap", id); } catch (e) {} paintStrap(); }
@@ -984,7 +999,8 @@
     document.body.dataset.body = body;
     if (DIGI.includes(body)) document.body.dataset.kind = "digi"; else delete document.body.dataset.kind;
     if (V2.includes(body)) document.body.dataset.cams = "v2"; else delete document.body.dataset.cams;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=20`;
+    if (NOSTRAP.includes(body)) document.body.dataset.nostrap = ""; else delete document.body.dataset.nostrap;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=21`;
     // bodies with no painted key in that spot get a drawn one
     const keys = { compact: ["p2"], white: ["p1", "p2", "p3"] }[body] || [];
     ["p1", "p2", "p3"].forEach((p) => document.querySelector(".hit-pill." + p).classList.toggle("key", keys.includes(p)));
