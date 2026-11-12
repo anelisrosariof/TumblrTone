@@ -17,9 +17,35 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body class="mode-empty" data-body="pink">
+  <!-- corner buttons: background + camera body -->
+  <button id="bgBtn" class="corner-btn cb-left" type="button" aria-label="Change background">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.4 2.6a2 2 0 0 1 2.9 2.9l-8.6 8.6-2.9-2.9z" fill="currentColor"/><path d="M8.6 12.4l2.9 2.9c-.4 2.5-2.3 4.6-5.6 4.6-1.5 0-2.8-.4-3.9-1.1 1.6-.6 2.1-1.6 2.3-2.9.3-2 1.8-3.3 4.3-3.5z" fill="currentColor"/></svg>
+  </button>
+  <button id="bodyBtn" class="corner-btn cb-right" type="button" aria-label="Change camera and keychain">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5l1.4-2h4.2l1.4 2H19a2.5 2.5 0 0 1 2.5 2.5v10A2.5 2.5 0 0 1 19 20H5a2.5 2.5 0 0 1-2.5-2.5v-10A2.5 2.5 0 0 1 5 5zm3.5 3.2a4.3 4.3 0 1 0 0 8.6 4.3 4.3 0 0 0 0-8.6zm0 2a2.3 2.3 0 1 1 0 4.6 2.3 2.3 0 0 1 0-4.6z" fill="currentColor"/></svg>
+  </button>
+
+  <section id="bgSheet" class="sheet" hidden>
+    <div class="sheet-card">
+      <div class="sheet-head"><b>background</b><button class="sheet-x" type="button" aria-label="Close">✕</button></div>
+      <div class="bg-grid" id="bgGrid"></div>
+      <label class="pix-btn own-btn">+ CUSTOM COLOUR <input type="color" id="bgColor" value="#e8ccd8"></label>
+    </div>
+  </section>
+
+  <section id="bodySheet" class="sheet" hidden>
+    <div class="sheet-card">
+      <div class="sheet-head"><b>camera</b><button class="sheet-x" type="button" aria-label="Close">✕</button></div>
+      <p class="menu-label">KEYCHAIN</p>
+      <div class="chips" id="strapChips"></div>
+      <p class="menu-label">DEVICE</p>
+      <div class="dev-grid" id="deviceGrid"></div>
+    </div>
+  </section>
+
   <div class="desk">
     <!-- scattered painted stickers -->
     <img class="deco d-bow" src="img/bow.webp" alt="" aria-hidden="true">
@@ -38,7 +64,7 @@
     <main class="cam" id="cam">
       <img class="cam-art" id="camArt" src="img/camera-blank.webp" alt="" aria-hidden="true">
       <i class="lug" aria-hidden="true"></i>
-      <img class="strap" id="strap" src="img/strap.webp?v=22" alt="" aria-hidden="true">
+      <img class="strap" id="strap" src="img/strap.webp?v=23" alt="" aria-hidden="true">
 
       <button id="powerBtn" class="hit hit-power" type="button" aria-label="Power camera on or off"><i class="led"></i></button>
 
@@ -139,10 +165,6 @@
           </div>
 
           <div class="panel" id="panel-setup">
-            <p class="menu-label">DEVICE</p>
-            <div class="chips" id="deviceChips"></div>
-            <p class="menu-label">KEYCHAIN</p>
-            <div class="chips" id="strapChips"></div>
             <p class="menu-label">PICTURE SIZE</p>
             <div class="chips" id="aspectChips"></div>
             <p class="menu-label">GRID</p>
@@ -242,7 +264,7 @@
   <div id="toast" class="toast" hidden></div>
 
   <video id="video" playsinline muted hidden></video>
-  <script src="filters.js?v=22"></script>
-  <script src="script.js?v=22"></script>
+  <script src="filters.js?v=23"></script>
+  <script src="script.js?v=23"></script>
 </body>
 </html>

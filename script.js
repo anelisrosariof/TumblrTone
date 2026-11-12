@@ -915,7 +915,7 @@
       app.grid = v === "on";
       $("gridOverlay").hidden = !(app.mode === "camera" && app.grid);
     });
-    makeChips($("deviceChips"), DEVICES, () => device, setDevice);
+    paintDeviceGrid(); paintBgGrid();
     makeChips($("strapChips"), STRAPS, () => strapId, setStrap); paintStrap();
     paintBody();
     makeChips($("soundChips"), [{ id: "on", name: "Beep" }, { id: "off", name: "Quiet" }], () => (app.sound ? "on" : "off"), (v) => { app.sound = v === "on"; });
@@ -964,11 +964,37 @@
     { id: "grape", name: "Grape toy cam" },
     { id: "flip", name: "Lilac flip phone" },
     { id: "aqua", name: "Aqua clear phone" },
-    { id: "slider", name: "Flame slider phone" },
+    { id: "slider", name: "Flame slider phone" },    { id: "f26_4", name: "Pearl cam" },
+    { id: "f30_33", name: "Cherry flip" },
+    { id: "f29_8", name: "Ribbon flip" },
+    { id: "f26_7", name: "Antenna phone" },
+    { id: "f30_12", name: "Star punk phone" },
+    { id: "f30_10", name: "Good vibes phone" },
+    { id: "f30_30", name: "Play toy cam" },
+    { id: "f30_18", name: "Space instant" },
+    { id: "f30_16", name: "Lavender 2000s cam" },
+    { id: "f28_2", name: "Bubblegum phone" },
+    { id: "f13_2", name: "Pink swivel" },
+    { id: "f14_2", name: "Lilac bow cam" },
+    { id: "f30_28", name: "Rose bow cam" },
+    { id: "f16_3", name: "Lilac qwerty" },
+    { id: "f18_2", name: "Pink qwerty" },
+    { id: "f20_2", name: "Pink touch phone" },
+    { id: "f20_3", name: "Pearl smartphone" },
+    { id: "f20_4", name: "Cherry touch phone" },
+    { id: "f22_2", name: "Cyber PDA" },
+    { id: "f22_5", name: "Lilac compact phone" },
+    { id: "f30_36", name: "Butter compact phone" },
+    { id: "f22_6", name: "Lime cordless" },
+    { id: "f30_39", name: "Lilac cordless" },
+    { id: "f25_2", name: "Deep sea slider" },
+    { id: "f27_2", name: "Oil slick phone" },
+    { id: "f27_3", name: "Jelly phone" },
   ];
+  const DECK = ["f26_4", "f30_33", "f29_8", "f26_7", "f30_12", "f30_10", "f30_30", "f30_18", "f30_16", "f28_2", "f13_2", "f14_2", "f30_28", "f16_3", "f18_2", "f20_2", "f20_3", "f20_4", "f22_2", "f22_5", "f30_36", "f22_6", "f30_39", "f25_2", "f27_2", "f27_3"];
   const V2 = ["chocolate", "cobalt", "moonlight", "babyblue", "denim", "sakura", "icephone",
     "wine", "floral", "moss", "checker", "gingham", "lemon", "bubblegum", "instant", "camcorder", "grape", "flip", "aqua", "slider"];
-  const NOSTRAP = ["flip", "aqua", "slider", "camcorder"]; // these are drawn with their own charm
+  const NOSTRAP = ["flip", "aqua", "slider", "camcorder", "f20_4", "f22_5", "f26_7", "f29_8", "f30_12", "f30_33", "f30_36", "f22_6", "f30_39", "f30_10"]; // these are drawn with their own charm
   const DIGI = ["sage", "white", "jewel", ...V2];
   const STRAPS = [
     { id: "beads", name: "Beads", src: "img/strap.webp", x: 0.506 },
@@ -987,7 +1013,7 @@
     if (!k.src) return;
     // k.x = where the loop sits across the picture; CSS pins that point to the ring
     st.style.setProperty("--kx", k.x);
-    if (!st.src.endsWith(k.src + "?v=22")) st.src = k.src + "?v=22";
+    if (!st.src.endsWith(k.src + "?v=23")) st.src = k.src + "?v=23";
     st.classList.remove("jiggle"); void st.offsetWidth; st.classList.add("jiggle");
   }
   function setStrap(id) { strapId = id; try { localStorage.setItem("tt-strap", id); } catch (e) {} paintStrap(); }
@@ -997,10 +1023,10 @@
     const body = device;
     if (document.body.dataset.body === body) return;
     document.body.dataset.body = body;
-    if (DIGI.includes(body)) document.body.dataset.kind = "digi"; else delete document.body.dataset.kind;
+    if (DIGI.includes(body)) document.body.dataset.kind = "digi"; else if (DECK.includes(body)) document.body.dataset.kind = "deck"; else delete document.body.dataset.kind;
     if (V2.includes(body)) document.body.dataset.cams = "v2"; else delete document.body.dataset.cams;
     if (NOSTRAP.includes(body)) document.body.dataset.nostrap = ""; else delete document.body.dataset.nostrap;
-    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=22`;
+    $("camArt").src = body === "pink" ? "img/camera-blank.webp" : `img/body-${body}.webp?v=23`;
     // bodies with no painted key in that spot get a drawn one
     const keys = { compact: ["p2"], white: ["p1", "p2", "p3"] }[body] || [];
     ["p1", "p2", "p3"].forEach((p) => document.querySelector(".hit-pill." + p).classList.toggle("key", keys.includes(p)));
@@ -1046,6 +1072,60 @@
     addSticker(src);
   }
 
+  // ---- corner sheets: camera body + keychain, and the page background
+  const thumbOf = (id) => id === "pink" ? "img/camera-blank.webp" : `img/body-${id}.webp?v=23`;
+  function paintDeviceGrid() {
+    const g = $("deviceGrid"); g.innerHTML = "";
+    DEVICES.forEach((d) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "dev" + (d.id === device ? " on" : "");
+      b.innerHTML = `<img loading="lazy" alt="" src="${thumbOf(d.id)}"><span>${d.name}</span>`;
+      b.addEventListener("click", () => { setDevice(d.id); paintDeviceGrid(); });
+      g.appendChild(b);
+    });
+  }
+  const BGS = [
+    { id: "paper", name: "Graph paper" },
+    { id: "wall", name: "Floral wall", bg: '#ece4dc url("img/wall.webp") center / cover' },
+    { id: "lilac", name: "Lilac", paper: "#ecdbe6" }, { id: "blush", name: "Blush", paper: "#f7dde3" },
+    { id: "butter", name: "Butter", paper: "#f6efcf" }, { id: "mint", name: "Mint", paper: "#dcefe1" },
+    { id: "sky", name: "Baby blue", paper: "#dbe8f5" }, { id: "moss", name: "Moss", paper: "#c9cfb4" },
+    { id: "graphite", name: "Graphite", paper: "#6c6c6a", grid: "rgba(255,255,255,.08)" },
+    { id: "night", name: "Midnight", paper: "#221d29", grid: "rgba(232,204,216,.07)" },
+    { id: "gingham", name: "Pink gingham", bg: "repeating-linear-gradient(0deg, rgba(232,140,170,.28) 0 14px, transparent 14px 28px), repeating-linear-gradient(90deg, rgba(232,140,170,.28) 0 14px, transparent 14px 28px), #fff6f8" },
+    { id: "dots", name: "Polka dots", bg: "radial-gradient(#f2b8cb 22%, transparent 24%) 0 0 / 26px 26px, radial-gradient(#f2b8cb 22%, transparent 24%) 13px 13px / 26px 26px, #fff8f0" },
+    { id: "stars", name: "Starry", bg: "radial-gradient(#fff 1.2px, transparent 1.6px) 0 0 / 34px 34px, radial-gradient(#e8ccd8 1px, transparent 1.4px) 17px 17px / 34px 34px, #2b2440" },
+    { id: "stripes", name: "Candy stripe", bg: "repeating-linear-gradient(90deg, #fbe3ea 0 18px, #fff7f2 18px 36px)" },
+  ];
+  let bgId = "paper";
+  try { bgId = localStorage.getItem("tt-bg") || "paper"; } catch (e) {}
+  function applyBg() {
+    const st = document.body.style; st.background = ""; st.removeProperty("--paper"); st.removeProperty("--grid");
+    if (bgId.startsWith("#")) { st.setProperty("--paper", bgId); return; }
+    const b = BGS.find((x) => x.id === bgId) || BGS[0];
+    if (b.bg) st.background = b.bg;
+    if (b.paper) st.setProperty("--paper", b.paper);
+    if (b.grid) st.setProperty("--grid", b.grid);
+  }
+  function setBg(id) { bgId = id; try { localStorage.setItem("tt-bg", id); } catch (e) {} applyBg(); paintBgGrid(); }
+  function paintBgGrid() {
+    const g = $("bgGrid"); g.innerHTML = "";
+    BGS.forEach((b) => {
+      const el = document.createElement("button"); el.type = "button"; el.className = "bgs" + (b.id === bgId ? " on" : "");
+      el.innerHTML = `<i></i><span>${b.name}</span>`;
+      const sw = el.querySelector("i");
+      if (b.bg) sw.style.background = b.bg; else { sw.style.backgroundColor = b.paper || "#f6f1e7"; }
+      el.addEventListener("click", () => setBg(b.id));
+      g.appendChild(el);
+    });
+  }
+  applyBg();
+  $("bgColor").addEventListener("input", (e) => setBg(e.target.value));
+  const openSheet = (id) => { $(id).hidden = false; };
+  $("bgBtn").addEventListener("click", () => openSheet("bgSheet"));
+  $("bodyBtn").addEventListener("click", () => { paintDeviceGrid(); openSheet("bodySheet"); });
+  document.querySelectorAll(".sheet").forEach((sh) => sh.addEventListener("click", (e) => {
+    if (e.target === sh || e.target.closest(".sheet-x")) sh.hidden = true;
+  }));
   function setDevice(id) {
     device = id;
     try { localStorage.setItem("tt-device", id); } catch (e) {}
